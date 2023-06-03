@@ -1,0 +1,93 @@
+{
+  "name": "efun-app-v2",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@commitlint/config-conventional": "^16.2.4",
+    "@ethersproject/providers": "^5.6.0",
+    "@ethersproject/units": "^5.6.0",
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.60",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.2.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.0",
+    "@types/node": "^16.11.33",
+    "@types/react": "^18.0.8",
+    "@types/react-dom": "^18.0.3",
+    "@web3-react/core": "^6.1.9",
+    "@web3-react/fortmatic-connector": "^6.1.6",
+    "@web3-react/injected-connector": "^6.0.7",
+    "@web3-react/walletconnect-connector": "^6.2.13",
+    "@web3-react/walletlink-connector": "^6.2.13",
+    "axios": "^0.26.0",
+    "commitlint": "^16.2.4",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "react-redux": "^8.0.1",
+    "react-router-dom": "^5.3.0",
+    "react-scripts": "^4.0.3",
+    "redux": "^4.2.0",
+    "redux-devtools-extension": "^2.13.9",
+    "redux-thunk": "^2.4.1",
+    "typescript": "^4.6.4",
+    "web-vitals": "^2.1.4",
+    "web3": "^1.7.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build && echo '/* /index.html  200' | cat >build/_redirects",
+    "tsc": "tsc --noEmit",
+    "prettier": "prettier --write 'src/**/*.{ts,tsx}'",
+    "eslint": "eslint 'src/**/*.{ts,tsx}'",
+    "lint": "npm run prettier && npm run eslint --max-warnings=0 &&  npm run tsc",
+    "lint:check": "eslint \"src/**/*[.tsx,.ts]\"",
+    "lintfix": "npm run tsc && eslint --fix --ext .ts,.tsx .",
+    "test": "react-scripts test",
+    "test:ci": "CI=true react-scripts test --coverage --testResultsProcessor --passWithNoTests",
+    "eject": "react-scripts eject",
+    "format": "prettier --write \"src/**/*[.tsx,.ts]\"",
+    "format:check": "prettier --check \"src/**/*[.tsx,.ts]\"",
+    "prepare": "husky install"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@types/react-router-dom": "^5.3.3",
+    "@typescript-eslint/eslint-plugin": "^5.22.0",
+    "@typescript-eslint/parser": "^5.22.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.11.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.29.4",
+    "eslint-plugin-react-hooks": "^4.5.0",
+    "husky": "^7.0.4",
+    "lint-staged": "^12.4.1",
+    "prettier": "^2.6.2"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,css,html}": [
+      "eslint --cache --fix",
+      "prettier --write"
+    ]
+  }
+}
