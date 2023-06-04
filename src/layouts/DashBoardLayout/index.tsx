@@ -1,3 +1,4 @@
+import { makeStyles } from '@material-ui/core';
 import { NavBar } from 'components/NavBar';
 import React, { ElementType, useCallback } from 'react';
 import { Route, RouteComponentProps, RouteProps } from 'react-router-dom';
@@ -12,6 +13,7 @@ interface LayoutProps {
 }
 
 const Layout = (props: LayoutProps) => {
+  const classes = useStyles();
   const { routeProps, RenderComponent } = props;
   return (
     <div
@@ -19,6 +21,7 @@ const Layout = (props: LayoutProps) => {
         background: '#F8EDDC',
         minHeight:'100vh',
       }}
+      className={classes.container}
     >
       <NavBar />
       <RenderComponent {...routeProps} />
@@ -47,3 +50,10 @@ const DashBoardLayout = ({
 };
 
 export default DashBoardLayout;
+const useStyles = makeStyles((theme) => ({
+  container:{
+    '& p':{
+      color:'black',
+    }
+  }
+}));
