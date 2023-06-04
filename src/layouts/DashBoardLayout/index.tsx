@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core';
+import { Box, makeStyles } from '@material-ui/core';
 import { NavBar } from 'components/NavBar';
 import React, { ElementType, useCallback } from 'react';
 import { Route, RouteComponentProps, RouteProps } from 'react-router-dom';
@@ -24,7 +24,11 @@ const Layout = (props: LayoutProps) => {
       className={classes.container}
     >
       <NavBar />
+      <Box style={{
+        padding: '100px 60px',
+      }}>
       <RenderComponent {...routeProps} />
+      </Box>
     </div>
   );
 };
