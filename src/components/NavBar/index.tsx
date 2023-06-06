@@ -1,13 +1,20 @@
 import { Box, CardMedia, Typography, makeStyles } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import HomeIcon from '@mui/icons-material/Home';
 import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MenuIcon from '@mui/icons-material/Menu';
 import clsx from 'clsx';
+import { useHistory } from 'react-router-dom';
 export const NavBar = () => {
   const classes = useStyles();
-  const [active, setActive] = useState('home')
+  const [active, setActive] = useState('home');
+  const history = useHistory();
+  useEffect(() => {
+    if (history.location.pathname.split('/')[1]) {
+      setActive(history.location.pathname.split('/')[1]);
+    } else setActive('home');
+  }, [history]);
   return (
     <Box className={classes.container}>
       <Box display="flex" alignItems="center">
@@ -28,27 +35,44 @@ export const NavBar = () => {
         </Typography>
       </Box>
       <Box className={classes.wrapper}>
-        <Box className={clsx(classes.item, {
-          [classes.active]: active == 'home'
-        })} onClick={()=> setActive('home')}>
+        <Box
+          className={clsx(classes.item, {
+            [classes.active]: active == 'home',
+          })}
+          onClick={() => {
+            setActive('home');
+            history.push('/');
+          }}
+        >
           <HomeIcon fontSize="large" />
         </Box>
-        <Box className={clsx(classes.item, {
-          [classes.active]: active == 'search'
-        })} onClick={()=> setActive('search')}>
+        <Box
+          className={clsx(classes.item, {
+            [classes.active]: active == 'search',
+          })}
+          onClick={() => {
+            setActive('search');
+            history.push('/search');
+          }}
+        >
           <SearchIcon fontSize="large" />
         </Box>
-        <Box className={clsx(classes.item, {
-          [classes.active]: active == 'noti'
-        })} onClick={()=> setActive('noti')}>
+        <Box
+          className={clsx(classes.item, {
+            [classes.active]: active == 'noti',
+          })}
+          onClick={() => setActive('noti')}
+        >
           <NotificationsIcon fontSize="large" />
         </Box>
       </Box>
-      <Box style={{
-        padding:'5px 5px 0px 5px',
-        border:'1px solid black',
-      }}>
-        <MenuIcon fontSize="large"/>
+      <Box
+        style={{
+          padding: '5px 5px 0px 5px',
+          border: '1px solid black',
+        }}
+      >
+        <MenuIcon fontSize="large" />
       </Box>
     </Box>
   );
@@ -59,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     position: 'fixed',
     top: '0',
-    background:'darkkhaki',
+    background: 'darkkhaki',
     display: 'flex',
     alignItems: 'center',
     padding: '0px 60px',
@@ -78,15 +102,15 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'space-evenly',
   },
-  item:{
+  item: {
     width: 50,
-    display:'flex',
-    justifyContent:'center',
-    borderRadius:14,
-    cursor:'pointer',
+    display: 'flex',
+    justifyContent: 'center',
+    borderRadius: 14,
+    cursor: 'pointer',
   },
-  active:{
-    background:'white',
-    border:'1px solid black',
-  }
+  active: {
+    background: 'white',
+    border: '1px solid black',
+  },
 }));

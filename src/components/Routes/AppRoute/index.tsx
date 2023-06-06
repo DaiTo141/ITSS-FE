@@ -1,4 +1,5 @@
 import Home from 'containers/Home';
+import { Search } from 'containers/Search/Index';
 import { clientRoutesEnum } from 'enums/routes';
 import DashBoardLayout from 'layouts/DashBoardLayout';
 import React from 'react';
@@ -11,6 +12,11 @@ const AppRoutes = () => {
         exact
         path={clientRoutesEnum.HOME}
         RenderComponent={Home}
+      />
+       <DashBoardLayout
+        exact
+        path={clientRoutesEnum.SEARCH}
+        RenderComponent={Search}
       />
     </Switch>
   );

@@ -5,4 +5,5 @@ export enum apiRoutesEnum {
 
 export enum clientRoutesEnum {
   HOME = '/',
+  SEARCH = '/search'
 }
