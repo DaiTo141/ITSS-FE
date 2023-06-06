@@ -4,6 +4,7 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a lo
 import { Carousel } from 'react-responsive-carousel';
 import { PreviewItem } from 'components/PreviewItem';
 import { PreviewCommentItem } from 'components/PreviewCommentItem';
+import { fake, fake2 } from 'utils/helper';
 
 const Home = () => {
   const classes = useStyles();
@@ -98,47 +99,6 @@ const Home = () => {
 };
 
 export default Home;
-
-const fake = [
-  {
-    name: 'ブンボーフエ',
-    image:
-      'https://bepcuatoi.com/wp-content/uploads/2020/08/mon-pho-bo-thom-ngon.png',
-  },
-  {
-    name: 'バインクオン',
-    image:
-      'https://bepcuatoi.com/wp-content/uploads/2021/08/banh-cuon-thanh-tri-1200x900.jpg',
-  },
-  {
-    name: 'バインクオン 1',
-    image:
-      'https://bepcuatoi.com/wp-content/uploads/2021/08/banh-cuon-thanh-tri-1200x900.jpg',
-  },
-];
-
-const fake2 = [
-  {
-    name: '武石宮野',
-    content:
-      '店員さんがスープに使う牛骨の手入れをしました。スープはとても複雑な味で、たくさんの具材を使っているのだと思いますが、きっと細かいところまで気を配って初めてこういう味に仕上がるんだろうなあ、と思いました',
-    avatarUrl: 'https://avatarfiles.alphacoders.com/182/182133.jpg',
-  },
-  {
-    name: '静天音',
-    content:
-      '本当においしかったです。これから頻繁に通いたいと思いました。ベトナム料理って「フォー」と生春巻きしかないと思っていたら、美味しいものがたくさんあるんですね',
-    avatarUrl:
-      'https://symbols.vn/wp-content/uploads/2022/02/Avatar-Luffy-dep-an-tuong-nhat.jpg',
-  },
-  {
-    name: '静天音',
-    content:
-      '本当においしかったです。これから頻繁に通いたいと思いました。ベトナム料理って「フォー」と生春巻きしかないと思っていたら、美味しいものがたくさんあるんですね',
-    avatarUrl:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSilzHR9RIEyQ21wKSb_Ynk3N_A--cgXLOBDQ&usqp=CAU',
-  },
-];
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {

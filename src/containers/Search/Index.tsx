@@ -8,6 +8,9 @@ import {
 } from '@material-ui/core';
 import React, { useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
+import { PreviewCommentItem } from 'components/PreviewCommentItem';
+import { PreviewItem } from 'components/PreviewItem';
+import { fake, fake2, fake3 } from 'utils/helper';
 
 export const Search = () => {
   const [search, setSearch] = useState('');
@@ -44,6 +47,46 @@ export const Search = () => {
           }}
         ></Input>
       </CardMedia>
+      <Box mt={10}>
+        <Box className={classes.menu}>
+          <Typography>ニューポスト</Typography>
+          <Box
+            style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'space-evenly',
+              marginTop: 20,
+            }}
+          >
+            {fake.map((a) => {
+              return (
+                <Box key={a.name}>
+                  <PreviewItem image={a.image} name={a.name} />
+                </Box>
+              );
+            })}
+          </Box>
+        </Box>
+        <Box className={classes.menu}>
+          <Typography>レコメンドレストラン</Typography>
+          <Box
+            style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'space-evenly',
+              marginTop: 40,
+            }}
+          >
+           {fake3.map((a) => {
+              return (
+                <Box key={a.name}>
+                  <PreviewItem image={a.image} name={a.name} />
+                </Box>
+              );
+            })}
+          </Box>
+        </Box>
+      </Box>
     </Box>
   );
 };
@@ -59,9 +102,17 @@ const useStyles = makeStyles((theme) => ({
     color: 'black',
     fontSize: 24,
     padding: '0px 20px',
-    '& svg':{
+    '& svg': {
       fontSize: 32,
       marginRight: 12,
-    }
+    },
+  },
+  menu: {
+    marginTop: 20,
+    marginBottom: 20,
+    '&>p': {
+      fontSize: 24,
+      fontWeight: 700,
+    },
   },
 }));
