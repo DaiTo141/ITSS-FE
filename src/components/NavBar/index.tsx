@@ -8,8 +8,6 @@ import clsx from 'clsx';
 export const NavBar = () => {
   const classes = useStyles();
   const [active, setActive] = useState('home')
-
-
   return (
     <Box className={classes.container}>
       <Box display="flex" alignItems="center">
@@ -65,6 +63,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     padding: '0px 60px',
+    zIndex: 1000,
     justifyContent: 'space-between',
     '& svg': {
       color: 'black !important',
