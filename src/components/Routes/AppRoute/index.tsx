@@ -1,3 +1,5 @@
+import { DetailFood } from 'containers/DetailFood';
+import { DetailRestaurant } from 'containers/DetailRestaurant';
 import Home from 'containers/Home';
 import { Search } from 'containers/Search/Index';
 import { clientRoutesEnum } from 'enums/routes';
@@ -18,6 +20,17 @@ const AppRoutes = () => {
         path={clientRoutesEnum.SEARCH}
         RenderComponent={Search}
       />
+      <DashBoardLayout
+        exact
+        path={clientRoutesEnum.DETAIL_FOOD}
+        RenderComponent={DetailFood}
+      />
+      <DashBoardLayout
+        exact
+        path={clientRoutesEnum.DETAIL_RESTAURANT}
+        RenderComponent={DetailRestaurant}
+      />
+
     </Switch>
   );
 };

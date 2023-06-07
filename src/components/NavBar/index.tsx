@@ -17,7 +17,17 @@ export const NavBar = () => {
   }, [history]);
   return (
     <Box className={classes.container}>
-      <Box display="flex" alignItems="center">
+      <Box
+        display="flex"
+        alignItems="center"
+        style={{
+          cursor: 'pointer',
+        }}
+        onClick={() => {
+          setActive('home');
+          history.push('/');
+        }}
+      >
         <CardMedia
           image="/images/logo.png"
           style={{

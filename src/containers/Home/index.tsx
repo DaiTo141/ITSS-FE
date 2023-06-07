@@ -4,15 +4,18 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a lo
 import { Carousel } from 'react-responsive-carousel';
 import { PreviewItem } from 'components/PreviewItem';
 import { PreviewCommentItem } from 'components/PreviewCommentItem';
-import { fake, fake2 } from 'utils/helper';
+import { bannerFake, fake, fake2 } from 'utils/helper';
+import { Rating } from '@mui/material';
+import { useHistory } from 'react-router-dom';
 
 const Home = () => {
   const classes = useStyles();
+  const history = useHistory();
   return (
     <Box>
       <Box
         style={{
-          background: 'lightpink',
+          background: 'linear-gradient(180deg, rgba(86, 80, 84, 0.1) -3.21%, #F2BFA8 71.13%)',
           borderRadius: 30,
         }}
       >
@@ -23,33 +26,29 @@ const Home = () => {
           transitionTime={1000}
           infiniteLoop
         >
-          <Box className={classes.wrapper}>
-            <Box className={classes.wrapper2}>
-              <Typography>Bún chả</Typography>
-              <Typography>Giá: 40000 VND</Typography>
-              <Typography>Số sao: 5 sao</Typography>
-              <Typography>Đánh giá: 35 người</Typography>
-            </Box>
-            <CardMedia image="images/image1.jpg" className={classes.img} />
-          </Box>
-          <Box className={classes.wrapper}>
-            <Box className={classes.wrapper2}>
-              <Typography>Bún chả</Typography>
-              <Typography>Giá: 40000 VND</Typography>
-              <Typography>Số sao: 5 sao</Typography>
-              <Typography>Đánh giá: 35 người</Typography>
-            </Box>
-            <CardMedia image="images/image2.jpeg" className={classes.img} />
-          </Box>
-          <Box className={classes.wrapper}>
-            <Box className={classes.wrapper2}>
-              <Typography>Bún chả</Typography>
-              <Typography>Giá: 40000 VND</Typography>
-              <Typography>Số sao: 5 sao</Typography>
-              <Typography>Đánh giá: 35 người</Typography>
-            </Box>
-            <CardMedia image="images/image2.jpeg" className={classes.img} />
-          </Box>
+          {fake.slice(-3).map((f,i) => {
+            return (
+              <Box className={classes.wrapper} key={f.name} onClick={()=>{
+                history.push(`/detail-food/${7 + i}`)
+              }}>
+                <Box className={classes.wrapper2}>
+                  <Typography>{f.name}</Typography>
+                  <Typography>価格: {f.price}</Typography>
+                  <Rating
+                    name="read-only"
+                    value={f.ratingStar}
+                    precision={0.5}
+                    readOnly
+                    style={{
+                      margin:'8px 0px'
+                    }}
+                  />
+                  <Typography>レビュー: {Math.floor(Math.random() * (50 - 20 + 1)) + 20}</Typography>
+                </Box>
+                <CardMedia image={f.image} className={classes.img} />
+              </Box>
+            );
+          })}
         </Carousel>
       </Box>
       <Box className={classes.menu}>
@@ -58,13 +57,18 @@ const Home = () => {
           style={{
             width: '100%',
             display: 'flex',
-            justifyContent: 'space-evenly',
+            // justifyContent: 'space-evenly',
             marginTop: 20,
+            overflowY:'auto'
           }}
-        >
-          {fake.map((a) => {
+          >
+          {fake.map((a,i) => {
             return (
-              <Box key={a.name}>
+              <Box key={i} mr={3} ml={3} style={{
+                cursor:'pointer',
+              }} onClick={()=>{
+                history.push(`detail-food/${i+1}`)
+              }}>
                 <PreviewItem image={a.image} name={a.name} />
               </Box>
             );
@@ -81,9 +85,9 @@ const Home = () => {
             marginTop: 40,
           }}
         >
-          {fake2.map((a) => {
+          {fake2.map((a,i) => {
             return (
-              <Box key={a.name}>
+              <Box key={i}>
                 <PreviewCommentItem
                   content={a.content}
                   avatarUrl={a.avatarUrl}
@@ -100,12 +104,13 @@ const Home = () => {
 
 export default Home;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((_theme) => ({
   wrapper: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-evenly',
     padding: '40px 40px',
+    cursor:'pointer',
   },
   wrapper2: {
     display: 'flex',
@@ -113,7 +118,13 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     '& p': {
       fontSize: 20,
+      margin:'8px 0px',
     },
+    '&>p:first-child':{
+      fontSize: 24,
+      color:'#099462',
+      fontWeight: 700,
+    }
   },
   img: {
     height: 400,
