@@ -25,7 +25,7 @@ const Layout = (props: LayoutProps) => {
     >
       <NavBar />
       <Box style={{
-        padding: '100px 60px',
+        padding: '100px 200px',
       }}>
       <RenderComponent {...routeProps} />
       </Box>

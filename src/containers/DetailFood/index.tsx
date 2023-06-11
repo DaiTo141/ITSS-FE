@@ -1,4 +1,10 @@
-import { Box, CardMedia, Typography, makeStyles } from '@material-ui/core';
+import {
+  Box,
+  Card,
+  CardMedia,
+  Typography,
+  makeStyles,
+} from '@material-ui/core';
 import { Rating } from '@mui/material';
 import React from 'react';
 import { useParams } from 'react-router-dom';
@@ -40,6 +46,91 @@ export const DetailFood = () => {
         <Box className={classes.item}>
           <Typography>レーティング: </Typography>
           <Typography>{data.description}</Typography>
+        </Box>
+      </Box>
+      <Box display="flex" justifyContent="flex-end" width="100%" mt={5}>
+        <CardMedia
+          image="/images/Chat_plus.png"
+          style={{
+            width: 52,
+            height: 52,
+            padding: 10,
+            border: '1px solid black',
+            borderRadius: 10,
+            cursor: 'pointer',
+          }}
+        />
+      </Box>
+      <Box mt={5} width={'100%'}>
+        <Box display="flex" justifyContent="space-between" width={'100%'}>
+          <Box
+            width="calc(100% - 140px)"
+            style={{
+              display: 'flex',
+            }}
+          >
+            <CardMedia
+              image="/images/default-avatar.jpeg"
+              style={{
+                width: 120,
+                height: 100,
+                marginRight: 20,
+                borderRadius: '50%',
+              }}
+            />
+            <Box display='flex' flexDirection='column' justifyContent='space-evenly' width='100%'>
+              <Box display="flex" alignItems="center">
+                <Box
+                  style={{
+                    border: '1px solid red',
+                    background: 'white',
+                    padding: '5px 20px',
+                    marginRight: 20,
+                    borderRadius: 20,
+                  }}
+                >
+                  <Typography>ユーザーネーム</Typography>
+                </Box>
+                <Rating name="read-only" value={4} precision={0.5} readOnly />
+              </Box>
+              <Box
+                style={{
+                  border: '1px solid red',
+                  background: 'white',
+                  padding: '5px 20px',
+                  borderRadius: 20,
+                }}
+              >
+                <Typography>本人のユーザーがコメントを除きたいか</Typography>
+              </Box>
+            </Box>
+          </Box>
+          <Box width={120} display="flex" justifyContent="space-between">
+            <Box>
+              <CardMedia
+                image="/images/chat.png"
+                style={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: 25,
+                }}
+              />
+            </Box>
+            <Box
+              style={{
+                borderRadius: 25,
+              }}
+            >
+              <CardMedia
+                image="/images/close.png"
+                style={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: 25,
+                }}
+              />
+            </Box>
+          </Box>
         </Box>
       </Box>
     </Box>

@@ -46,7 +46,7 @@ export const PreviewCommentItem = ({
 };
 const useStyles = makeStyles((theme) => ({
   container: {
-    width: 300,
+    width: 280,
     height: 300,
     background: 'bisque',
     borderRadius: 30,
