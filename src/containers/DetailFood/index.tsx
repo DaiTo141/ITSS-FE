@@ -29,7 +29,7 @@ export const DetailFood = () => {
           <Typography>{data.res_name}</Typography>
         </Box>
         <Box className={classes.item}>
-          <Typography>価格: </Typography>
+          <Typography>評価: </Typography>
           <Rating
             name="read-only"
             value={data.ratingStar}
