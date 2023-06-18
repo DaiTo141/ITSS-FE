@@ -15,6 +15,15 @@ export const NavBar = () => {
     const data = await AXIOS.get('foods');
     localStorage.setItem('foods', JSON.stringify(data));
   };
+  const getUsers = async () => {
+    const data = await AXIOS.get('users') as any;
+    localStorage.setItem('users', JSON.stringify(data));
+    localStorage.setItem('me', JSON.stringify(data[2]));
+  };
+  const getRestaurants = async () => {
+    const data = await AXIOS.get('restaurants');
+    localStorage.setItem('restaurants', JSON.stringify(data));
+  };
   const getReviews = async () => {
     const data = await AXIOS.get('reviews');
     localStorage.setItem('reviews', JSON.stringify(data));
@@ -22,6 +31,8 @@ export const NavBar = () => {
   useEffect(() => {
     getFoods();
     getReviews();
+    getUsers();
+    getRestaurants();
   }, []);
   useEffect(() => {
     if (history.location.pathname.split('/')[1]) {

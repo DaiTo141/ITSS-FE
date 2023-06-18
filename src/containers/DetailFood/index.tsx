@@ -5,16 +5,31 @@ import {
   Typography,
   makeStyles,
 } from '@material-ui/core';
-import { Rating } from '@mui/material';
-import React from 'react';
+import { Pagination, Rating } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import AXIOS from 'services/axios';
 export const DetailFood = () => {
   const { foodId } = useParams<{ foodId: string }>();
   const classes = useStyles();
-  const foods = localStorage.getItem('foods');
-  const data = foods
-    ? JSON.parse(foods).filter((d: any) => d.id == foodId)[0]
-    : ({} as any);
+  const [page, setPage] = useState(1);
+  const [data, setData] = useState({} as any);
+  const getDataReviewPage = () => {
+    const startIndex = (page - 1) * 4;
+    const endIndex = startIndex + 4;
+    console.log('data.reviews', data.reviews);
+    if (!data.reviews) return [];
+    return data.reviews.slice(startIndex, endIndex);
+  };
+  useEffect(() => {
+    const foods = localStorage.getItem('foods');
+    const data = foods
+      ? JSON.parse(foods).filter((d: any) => d.id == foodId)[0]
+      : ({} as any);
+    setData(data);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [localStorage.getItem('foods'), foodId]);
+  if (JSON.stringify(data) == '{}') return <Box></Box>;
   return (
     <Box className={classes.container}>
       <Box display="flex" justifyContent="center" alignItems="center">
@@ -64,15 +79,21 @@ export const DetailFood = () => {
         />
       </Box>
       <Box mt={5} width={'100%'}>
-        {data.reviews.map((r:any,i:any) => {
+        {getDataReviewPage().map((r: any, i: any) => {
           return (
-            <Box display="flex" justifyContent="space-between" width={'100%'} key={i} style={{
-              border: '1px solid black',
-              padding: 20,
-              margin: '20px 0px',
-              borderRadius: 50,
-              background:'white',
-            }}>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              width={'100%'}
+              key={i}
+              style={{
+                border: '1px solid black',
+                padding: 20,
+                margin: '20px 0px',
+                borderRadius: 50,
+                background: 'white',
+              }}
+            >
               <Box
                 width="calc(100% - 140px)"
                 style={{
@@ -80,7 +101,7 @@ export const DetailFood = () => {
                 }}
               >
                 <CardMedia
-                  image={r.user.image || '' }
+                  image={r.user.image || ''}
                   style={{
                     width: 120,
                     height: 100,
@@ -119,11 +140,10 @@ export const DetailFood = () => {
                       background: 'white',
                       padding: '5px 20px',
                       borderRadius: 20,
+                      marginTop: 12,
                     }}
                   >
-                    <Typography>
-                      本人のユーザーがコメントを除きたいか
-                    </Typography>
+                    <Typography>{r.review_text}</Typography>
                   </Box>
                 </Box>
               </Box>
@@ -138,25 +158,55 @@ export const DetailFood = () => {
                     }}
                   />
                 </Box>
-                <Box
-                  style={{
-                    borderRadius: 25,
-                  }}
-                >
-                  <CardMedia
-                    image="/images/close.png"
-                    style={{
-                      width: 50,
-                      height: 50,
-                      borderRadius: 25,
-                    }}
-                  />
-                </Box>
+                {localStorage.getItem('me') &&
+                  r.user.id ==
+                    JSON.parse(localStorage.getItem('me') || '').id && (
+                    <Box
+                      style={{
+                        borderRadius: 25,
+                        cursor: 'pointer',
+                      }}
+                      onClick={async () => {
+                        const foods = localStorage.getItem('foods');
+                        const currentData = foods
+                          ? JSON.parse(foods).filter(
+                              (d: any) => d.id == foodId,
+                            )[0].reviews
+                          : ([] as any);
+                        let result = currentData.filter(
+                          (x: any) => x.id != r.id,
+                        );
+                        let permisstion =
+                          confirm('本人のユーザーがコメントを除きたいか');
+                        if (permisstion) {
+                          setData({ ...data, reviews: result });
+                          await AXIOS.delete(`reviews/${r.id}`)
+                          const newFoods = await AXIOS.get('foods');
+                          localStorage.setItem('foods', JSON.stringify(newFoods));
+                        }
+                      }}
+                    >
+                      <CardMedia
+                        image="/images/close.png"
+                        style={{
+                          width: 50,
+                          height: 50,
+                          borderRadius: 25,
+                        }}
+                      />
+                    </Box>
+                  )}
               </Box>
             </Box>
           );
         })}
       </Box>
+      <Pagination
+        count={Math.ceil(data.reviews ? data.reviews.length / 4 : 2)}
+        onChange={(e, page) => {
+          setPage(page);
+        }}
+      />
     </Box>
   );
 };
