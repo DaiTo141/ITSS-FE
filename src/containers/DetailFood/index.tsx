@@ -8,11 +8,13 @@ import {
 import { Rating } from '@mui/material';
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { bannerFake, fake } from 'utils/helper';
 export const DetailFood = () => {
   const { foodId } = useParams<{ foodId: string }>();
   const classes = useStyles();
-  const data = fake[+foodId - 1];
+  const foods = localStorage.getItem('foods');
+  const data = foods
+    ? JSON.parse(foods).filter((d: any) => d.id == foodId)[0]
+    : ({} as any);
   return (
     <Box className={classes.container}>
       <Box display="flex" justifyContent="center" alignItems="center">
@@ -32,13 +34,13 @@ export const DetailFood = () => {
         </Box>
         <Box className={classes.item}>
           <Typography>レストラン: </Typography>
-          <Typography>{data.res_name}</Typography>
+          <Typography>{data.restaurant_name}</Typography>
         </Box>
         <Box className={classes.item}>
           <Typography>評価: </Typography>
           <Rating
             name="read-only"
-            value={data.ratingStar}
+            value={data.rating_average}
             precision={0.5}
             readOnly
           />
@@ -62,76 +64,98 @@ export const DetailFood = () => {
         />
       </Box>
       <Box mt={5} width={'100%'}>
-        <Box display="flex" justifyContent="space-between" width={'100%'}>
-          <Box
-            width="calc(100% - 140px)"
-            style={{
-              display: 'flex',
-            }}
-          >
-            <CardMedia
-              image="/images/default-avatar.jpeg"
-              style={{
-                width: 120,
-                height: 100,
-                marginRight: 20,
-                borderRadius: '50%',
-              }}
-            />
-            <Box display='flex' flexDirection='column' justifyContent='space-evenly' width='100%'>
-              <Box display="flex" alignItems="center">
-                <Box
-                  style={{
-                    border: '1px solid red',
-                    background: 'white',
-                    padding: '5px 20px',
-                    marginRight: 20,
-                    borderRadius: 20,
-                  }}
-                >
-                  <Typography>ユーザーネーム</Typography>
-                </Box>
-                <Rating name="read-only" value={4} precision={0.5} readOnly />
-              </Box>
+        {data.reviews.map((r:any,i:any) => {
+          return (
+            <Box display="flex" justifyContent="space-between" width={'100%'} key={i} style={{
+              border: '1px solid black',
+              padding: 20,
+              margin: '20px 0px',
+              borderRadius: 50,
+              background:'white',
+            }}>
               <Box
+                width="calc(100% - 140px)"
                 style={{
-                  border: '1px solid red',
-                  background: 'white',
-                  padding: '5px 20px',
-                  borderRadius: 20,
+                  display: 'flex',
                 }}
               >
-                <Typography>本人のユーザーがコメントを除きたいか</Typography>
+                <CardMedia
+                  image={r.user.image || '' }
+                  style={{
+                    width: 120,
+                    height: 100,
+                    marginRight: 20,
+                    borderRadius: '50%',
+                  }}
+                />
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="space-evenly"
+                  width="100%"
+                >
+                  <Box display="flex" alignItems="center">
+                    <Box
+                      style={{
+                        border: '1px solid red',
+                        background: 'white',
+                        padding: '5px 20px',
+                        marginRight: 20,
+                        borderRadius: 20,
+                      }}
+                    >
+                      <Typography>{r.user.name}</Typography>
+                    </Box>
+                    <Rating
+                      name="read-only"
+                      value={4}
+                      precision={0.5}
+                      readOnly
+                    />
+                  </Box>
+                  <Box
+                    style={{
+                      border: '1px solid red',
+                      background: 'white',
+                      padding: '5px 20px',
+                      borderRadius: 20,
+                    }}
+                  >
+                    <Typography>
+                      本人のユーザーがコメントを除きたいか
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
+              <Box width={120} display="flex" justifyContent="space-between">
+                <Box>
+                  <CardMedia
+                    image="/images/chat.png"
+                    style={{
+                      width: 50,
+                      height: 50,
+                      borderRadius: 25,
+                    }}
+                  />
+                </Box>
+                <Box
+                  style={{
+                    borderRadius: 25,
+                  }}
+                >
+                  <CardMedia
+                    image="/images/close.png"
+                    style={{
+                      width: 50,
+                      height: 50,
+                      borderRadius: 25,
+                    }}
+                  />
+                </Box>
               </Box>
             </Box>
-          </Box>
-          <Box width={120} display="flex" justifyContent="space-between">
-            <Box>
-              <CardMedia
-                image="/images/chat.png"
-                style={{
-                  width: 50,
-                  height: 50,
-                  borderRadius: 25,
-                }}
-              />
-            </Box>
-            <Box
-              style={{
-                borderRadius: 25,
-              }}
-            >
-              <CardMedia
-                image="/images/close.png"
-                style={{
-                  width: 50,
-                  height: 50,
-                  borderRadius: 25,
-                }}
-              />
-            </Box>
-          </Box>
-        </Box>
+          );
+        })}
       </Box>
     </Box>
   );

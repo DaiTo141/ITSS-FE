@@ -6,10 +6,23 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import MenuIcon from '@mui/icons-material/Menu';
 import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
+import AXIOS from 'services/axios';
 export const NavBar = () => {
   const classes = useStyles();
   const [active, setActive] = useState('home');
   const history = useHistory();
+  const getFoods = async () => {
+    const data = await AXIOS.get('foods');
+    localStorage.setItem('foods', JSON.stringify(data));
+  };
+  const getReviews = async () => {
+    const data = await AXIOS.get('reviews');
+    localStorage.setItem('reviews', JSON.stringify(data));
+  };
+  useEffect(() => {
+    getFoods();
+    getReviews();
+  }, []);
   useEffect(() => {
     if (history.location.pathname.split('/')[1]) {
       setActive(history.location.pathname.split('/')[1]);
