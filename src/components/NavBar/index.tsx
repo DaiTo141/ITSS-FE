@@ -1,24 +1,47 @@
-import { Box, CardMedia, Typography, makeStyles } from '@material-ui/core';
+import {
+  Box,
+  CardMedia,
+  Popover,
+  Typography,
+  makeStyles,
+} from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import HomeIcon from '@mui/icons-material/Home';
 import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import PersonIcon from '@mui/icons-material/Person';
 import MenuIcon from '@mui/icons-material/Menu';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
 import AXIOS from 'services/axios';
 export const NavBar = () => {
   const classes = useStyles();
   const [active, setActive] = useState('home');
+  const me = localStorage.getItem('me');
   const history = useHistory();
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
+    null,
+  );
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
+
   const getFoods = async () => {
     const data = await AXIOS.get('foods');
     localStorage.setItem('foods', JSON.stringify(data));
   };
   const getUsers = async () => {
-    const data = await AXIOS.get('users') as any;
+    const data = (await AXIOS.get('users')) as any;
     localStorage.setItem('users', JSON.stringify(data));
-    localStorage.setItem('me', JSON.stringify(data[2]));
   };
   const getRestaurants = async () => {
     const data = await AXIOS.get('restaurants');
@@ -104,10 +127,82 @@ export const NavBar = () => {
         style={{
           padding: '5px 5px 0px 5px',
           border: '1px solid black',
+          cursor: 'pointer',
         }}
+        onClick={handleClick}
       >
         <MenuIcon fontSize="large" />
       </Box>
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+        <Box
+          style={{
+            background: '#C6FFC8',
+            padding: 20,
+          }}
+        >
+          <Box
+            style={{
+              borderBottom: '1px solid gray',
+              marginBottom: 8,
+              paddingBottom: 8,
+              display: 'flex',
+              cursor: 'pointer',
+            }}
+            onClick={() => {
+              history.push('/login');
+            }}
+          >
+            <PersonIcon color="info" />
+            <Typography
+              style={{
+                fontWeight: 600,
+                marginLeft: 8,
+                color: 'black',
+              }}
+            >
+              {me ? 'プロフィール' : 'ログイン'}
+            </Typography>
+          </Box>
+          <Box
+            display="flex"
+            style={{
+              cursor: 'pointer',
+            }}
+            onClick={()=>{
+              if(!me) {
+                history.push('/register');
+              } else {
+                localStorage.removeItem('me');
+                history.push('/login');
+              }
+            }}
+          >
+            <VpnKeyIcon color="info" />
+            <Typography
+              style={{
+                fontWeight: 600,
+                marginLeft: 8,
+                color: 'black',
+              }}
+            >
+              {me ? 'ログアウト' : '登録'}
+            </Typography>
+          </Box>
+        </Box>
+      </Popover>
     </Box>
   );
 };

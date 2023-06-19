@@ -148,16 +148,20 @@ export const DetailFood = () => {
                 </Box>
               </Box>
               <Box width={120} display="flex" justifyContent="space-between">
-                <Box>
-                  <CardMedia
-                    image="/images/chat.png"
-                    style={{
-                      width: 50,
-                      height: 50,
-                      borderRadius: 25,
-                    }}
-                  />
-                </Box>
+                {localStorage.getItem('me') &&
+                  r.user.id ==
+                    JSON.parse(localStorage.getItem('me') || '').id && (
+                    <Box>
+                      <CardMedia
+                        image="/images/chat.png"
+                        style={{
+                          width: 50,
+                          height: 50,
+                          borderRadius: 25,
+                        }}
+                      />
+                    </Box>
+                  )}
                 {localStorage.getItem('me') &&
                   r.user.id ==
                     JSON.parse(localStorage.getItem('me') || '').id && (
@@ -180,9 +184,12 @@ export const DetailFood = () => {
                           confirm('本人のユーザーがコメントを除きたいか');
                         if (permisstion) {
                           setData({ ...data, reviews: result });
-                          await AXIOS.delete(`reviews/${r.id}`)
+                          await AXIOS.delete(`reviews/${r.id}`);
                           const newFoods = await AXIOS.get('foods');
-                          localStorage.setItem('foods', JSON.stringify(newFoods));
+                          localStorage.setItem(
+                            'foods',
+                            JSON.stringify(newFoods),
+                          );
                         }
                       }}
                     >
