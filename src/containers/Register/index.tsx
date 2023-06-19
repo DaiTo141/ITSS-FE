@@ -7,11 +7,21 @@ import {
   Typography,
   makeStyles,
 } from '@material-ui/core';
-import React from 'react';
+import React, { useState } from 'react';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import PasswordIcon from '@mui/icons-material/Password';
+import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
+import EnhancedEncryptionIcon from '@mui/icons-material/EnhancedEncryption';
+import { useHistory } from 'react-router-dom';
+import AXIOS from 'services/axios';
 export const Register = () => {
   const classes = useStyles();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [confirm, setConfirm] = useState('');
+  const [err, setErr] = useState(false);
+  const history = useHistory();
   return (
     <Box
       display="flex"
@@ -47,9 +57,13 @@ export const Register = () => {
             チーちゃんフード
           </Typography>
         </Box>
+
         <Box className={classes.wrapper}>
           <TextField
+            label="名前"
             variant="outlined"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -59,8 +73,24 @@ export const Register = () => {
             }}
           />
           <TextField
+            label="メールアドレス"
+            variant="outlined"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <AlternateEmailIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <TextField
+            label="パスワード"
             variant="outlined"
             type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -69,7 +99,26 @@ export const Register = () => {
               ),
             }}
           />
+          <TextField
+            label="パスワード確認"
+            variant="outlined"
+            type="password"
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <EnhancedEncryptionIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
         </Box>
+        {err && (
+          <Box mt={2} className="center-root">
+            <Typography style={{ color: 'red' }}>登録失敗</Typography>
+          </Box>
+        )}
         <Box className="center-root" mt={2}>
           <Button
             style={{
@@ -80,8 +129,26 @@ export const Register = () => {
               marginRight: 10,
               width: 130,
             }}
+            onClick={async () => {
+              if (confirm != password) {
+                setErr(true);
+                return;
+              }
+              const data = await AXIOS.post('/users', {
+                name: username,
+                email: email,
+                password: password,
+                image:
+                  'https://s3.ap-southeast-2.amazonaws.com/cdn.greekherald.com.au/wp-content/uploads/2020/07/05194617/default-avatar.png',
+                status: 0,
+              });
+              localStorage.setItem('me', JSON.stringify(data));
+              setTimeout(() => {
+                history.push('/');
+              }, 500);
+            }}
           >
-            ログイン
+            登録
           </Button>
           <Button
             style={{
@@ -92,16 +159,12 @@ export const Register = () => {
               marginLeft: 10,
               width: 130,
             }}
+            onClick={() => {
+              history.push('/login');
+            }}
           >
-            サインアップ
+            ログイン
           </Button>
-        </Box>
-        <Box mt={2} className="center-root">
-          <Typography
-            style={{ textDecoration: 'underline', cursor: 'pointer' }}
-          >
-            パースワード忘れ？
-          </Typography>
         </Box>
       </Box>
     </Box>
@@ -119,9 +182,10 @@ const useStyles = makeStyles((theme) => ({
       color: 'black',
     },
     '& svg': {
-      width: 32,
-      height: 32,
       fill: 'black',
+    },
+    '& label': {
+      color: 'black !important',
     },
   },
 }));

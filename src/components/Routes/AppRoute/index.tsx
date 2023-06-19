@@ -2,6 +2,7 @@ import { DetailFood } from 'containers/DetailFood';
 import { DetailRestaurant } from 'containers/DetailRestaurant';
 import Home from 'containers/Home';
 import { Login } from 'containers/Login';
+import { Register } from 'containers/Register';
 import { Search } from 'containers/Search/Index';
 import { clientRoutesEnum } from 'enums/routes';
 import DashBoardLayout from 'layouts/DashBoardLayout';
@@ -33,6 +34,7 @@ const AppRoutes = () => {
         RenderComponent={DetailRestaurant}
       />
       <LoginLayout exact path="/login" RenderComponent={Login} />
+      <LoginLayout exact path="/register" RenderComponent={Register} />
     </Switch>
   );
 };

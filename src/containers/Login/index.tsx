@@ -91,7 +91,9 @@ export const Login = () => {
         </Box>
         {err && (
           <Box mt={2} className="center-root">
-            <Typography style={{ color: 'red' }}>ログインに失敗しました。</Typography>
+            <Typography style={{ color: 'red' }}>
+              ログインに失敗しました。
+            </Typography>
           </Box>
         )}
         <Box className="center-root" mt={2}>
@@ -106,15 +108,15 @@ export const Login = () => {
             }}
             onClick={() => {
               const user: any = data.filter((d: any) => d.email == email)[0];
-              console.log('user', user)
+              console.log('user', user);
               if (!user) {
                 setErr(true);
               } else {
                 if (user.password == password) {
                   localStorage.setItem('me', JSON.stringify(user));
-                  setTimeout(()=>{
+                  setTimeout(() => {
                     history.push('/');
-                  },500)
+                  }, 500);
                 } else setErr(true);
               }
             }}
@@ -129,6 +131,9 @@ export const Login = () => {
               borderRadius: 40,
               marginLeft: 10,
               width: 130,
+            }}
+            onClick={() => {
+              history.push('/register');
             }}
           >
             サインアップ
