@@ -170,13 +170,16 @@ export const DetailFood = () => {
                 {localStorage.getItem('me') &&
                   r.user.id ==
                     JSON.parse(localStorage.getItem('me') || '').id && (
-                    <Box>
+                    <Box onClick={()=>{
+                      setOpen(true);
+                    }}>
                       <CardMedia
                         image="/images/chat.png"
                         style={{
                           width: 50,
                           height: 50,
                           borderRadius: 25,
+                          cursor:'pointer',
                         }}
                       />
                     </Box>

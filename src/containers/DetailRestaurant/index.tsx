@@ -1,12 +1,23 @@
 import { Box, CardMedia, Typography, makeStyles } from '@material-ui/core';
 import { Rating } from '@mui/material';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import AXIOS from 'services/axios';
 import { fake3 } from 'utils/helper';
 export const DetailRestaurant = () => {
   const { restaurantId } = useParams<{ restaurantId: string }>();
   const classes = useStyles();
-  const data = fake3[+restaurantId - 1];
+  // const data = fake3[+restaurantId - 1];
+  const [data, setData] = useState<any>();
+  useEffect(() => {
+    const getDetail = async () => {
+      const detail = (await AXIOS.get(`restaurants/${restaurantId}`)) as any;
+      console.log('detail', detail);
+      setData(detail);
+    };
+    getDetail();
+  }, [restaurantId]);
+  if (!data) return <></>;
   return (
     <Box className={classes.container}>
       <Box display="flex" justifyContent="center" alignItems="center">
@@ -26,20 +37,28 @@ export const DetailRestaurant = () => {
         </Box>
         <Box className={classes.item}>
           <Typography>位置: </Typography>
-          <Typography>{data.location}</Typography>
+          <Typography>{data.address}</Typography>
         </Box>
         <Box className={classes.item}>
-          <Typography>価格: </Typography>
+          <Typography>レーティング: </Typography>
           <Rating
             name="read-only"
-            value={data.ratingStar}
+            value={data.rating_average}
             precision={0.5}
             readOnly
           />
         </Box>
         <Box className={classes.item}>
-          <Typography>レーティング: </Typography>
-          <Typography>{data.description}</Typography>
+          <Typography>価格: </Typography>
+          <Typography>{data.low_price} - {data.high_price}</Typography>
+        </Box>
+        <Box className={classes.item}>
+          <Typography>開店時間: </Typography>
+          <Typography>{data.open_time}</Typography>
+        </Box>
+        <Box className={classes.item}>
+          <Typography>閉店時間: </Typography>
+          <Typography>{data.close_time}</Typography>
         </Box>
       </Box>
     </Box>

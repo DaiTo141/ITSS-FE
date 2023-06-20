@@ -16,12 +16,14 @@ export const CreateReview = ({
   handleOpen,
   foodId,
   isAdd,
+  data,
 }: {
   open: boolean;
   handleClose: () => void;
   handleOpen: () => void;
   foodId?: string;
   isAdd?: boolean;
+  data?:any;
 }) => {
   const classes = useStyles();
   const [rate, setRate] = useState(5);
