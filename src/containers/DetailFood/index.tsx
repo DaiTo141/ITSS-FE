@@ -2,22 +2,33 @@ import {
   Box,
   Card,
   CardMedia,
+  Modal,
   Typography,
   makeStyles,
 } from '@material-ui/core';
 import { Pagination, Rating } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import AXIOS from 'services/axios';
+import { CreateReview } from './CreateReview';
 export const DetailFood = () => {
   const { foodId } = useParams<{ foodId: string }>();
   const classes = useStyles();
   const [page, setPage] = useState(1);
   const [data, setData] = useState({} as any);
+  const history = useHistory();
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => {
+    if (!localStorage.getItem('me')) {
+      history.push('/login');
+      return;
+    }
+    setOpen(true);
+  };
+  const handleClose = () => setOpen(false);
   const getDataReviewPage = () => {
     const startIndex = (page - 1) * 4;
     const endIndex = startIndex + 4;
-    console.log('data.reviews', data.reviews);
     if (!data.reviews) return [];
     return data.reviews.slice(startIndex, endIndex);
   };
@@ -26,6 +37,8 @@ export const DetailFood = () => {
     const data = foods
       ? JSON.parse(foods).filter((d: any) => d.id == foodId)[0]
       : ({} as any);
+    const reviews = data.reviews.reverse();
+    data.reviews = reviews;
     setData(data);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [localStorage.getItem('foods'), foodId]);
@@ -65,7 +78,13 @@ export const DetailFood = () => {
           <Typography>{data.description}</Typography>
         </Box>
       </Box>
-      <Box display="flex" justifyContent="flex-end" width="100%" mt={5}>
+      <Box
+        display="flex"
+        justifyContent="flex-end"
+        width="100%"
+        mt={5}
+        onClick={handleOpen}
+      >
         <CardMedia
           image="/images/Chat_plus.png"
           style={{
@@ -183,7 +202,7 @@ export const DetailFood = () => {
                         let permisstion =
                           confirm('本人のユーザーがコメントを除きたいか');
                         if (permisstion) {
-                          setData({ ...data, reviews: result });
+                          setData({ ...data, reviews: result.reverse() });
                           await AXIOS.delete(`reviews/${r.id}`);
                           const newFoods = await AXIOS.get('foods');
                           localStorage.setItem(
@@ -214,6 +233,13 @@ export const DetailFood = () => {
           setPage(page);
         }}
       />
+      <CreateReview
+        open={open}
+        handleClose={handleClose}
+        handleOpen={handleOpen}
+        foodId={foodId}
+        isAdd
+      />
     </Box>
   );
 };
@@ -243,6 +269,17 @@ const useStyles = makeStyles((theme) => ({
       marginRight: 20,
       fontWeight: 600,
       minWidth: 140,
+    },
+  },
+  modal: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    background: 'white',
+    '& p': {
+      color: 'black',
     },
   },
 }));
