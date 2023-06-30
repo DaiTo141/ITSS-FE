@@ -6,16 +6,17 @@ import {
   Typography,
   makeStyles,
 } from '@material-ui/core';
-import { Pagination, Rating } from '@mui/material';
+import { Pagination, Rating, Button } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import AXIOS from 'services/axios';
 import { CreateReview } from './CreateReview';
+
 export const DetailFood = () => {
   const { foodId } = useParams<{ foodId: string }>();
   const classes = useStyles();
   const [page, setPage] = useState(1);
-  const [data, setData] = useState({} as any);
+  const [data, setData] = useState<any>({});
   const history = useHistory();
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
@@ -33,16 +34,16 @@ export const DetailFood = () => {
     return data.reviews.slice(startIndex, endIndex);
   };
   useEffect(() => {
-    const foods = localStorage.getItem('foods');
-    const data = foods
-      ? JSON.parse(foods).filter((d: any) => d.id == foodId)[0]
-      : ({} as any);
-    const reviews = data.reviews.reverse();
-    data.reviews = reviews;
-    setData(data);
+    AXIOS.get(`foods/${foodId}`).then((food:any) => {
+      const reviews = food.reviews.reverse();
+      food.reviews = reviews;
+      setData(food);
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [localStorage.getItem('foods'), foodId]);
+  }, [foodId]);
+
   if (JSON.stringify(data) == '{}') return <Box></Box>;
+  
   return (
     <Box className={classes.container}>
       <Box display="flex" justifyContent="center" alignItems="center">
@@ -62,7 +63,11 @@ export const DetailFood = () => {
         </Box>
         <Box className={classes.item}>
           <Typography>レストラン: </Typography>
-          <Typography>{data.restaurant_name}</Typography>
+          <Typography><Button onClick={() => history.push(`/detail-restaurant/${data.restaurant_id}`)}>{data.restaurant_name}</Button></Typography>
+        </Box>
+        <Box className={classes.item}>
+          <Typography>価格: </Typography>
+          <Typography>{data.price} VND</Typography>
         </Box>
         <Box className={classes.item}>
           <Typography>評価: </Typography>
@@ -86,7 +91,7 @@ export const DetailFood = () => {
         onClick={handleOpen}
       >
         <CardMedia
-          image="/images/Chat_plus.png"
+          image="/images/chat_plus.png"
           style={{
             width: 52,
             height: 52,
@@ -98,7 +103,7 @@ export const DetailFood = () => {
         />
       </Box>
       <Box mt={5} width={'100%'}>
-        {getDataReviewPage().map((r: any, i: any) => {
+        {data.reviews.length > 0 && getDataReviewPage().map((r: any, i: any) => {
           return (
             <Box
               display="flex"
@@ -186,20 +191,15 @@ export const DetailFood = () => {
                   )}
                 {localStorage.getItem('me') &&
                   r.user.id ==
-                    JSON.parse(localStorage.getItem('me') || '').id && (
+                    JSON.parse(localStorage.getItem('me') || '{}').id && (
                     <Box
                       style={{
                         borderRadius: 25,
                         cursor: 'pointer',
                       }}
                       onClick={async () => {
-                        const foods = localStorage.getItem('foods');
-                        const currentData = foods
-                          ? JSON.parse(foods).filter(
-                              (d: any) => d.id == foodId,
-                            )[0].reviews
-                          : ([] as any);
-                        let result = currentData.filter(
+                        const food = data;
+                        let result = food.filter(
                           (x: any) => x.id != r.id,
                         );
                         let permisstion =

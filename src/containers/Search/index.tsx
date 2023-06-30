@@ -10,24 +10,58 @@ import {
   Typography,
   makeStyles,
 } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import { PreviewCommentItem } from 'components/PreviewCommentItem';
 import { PreviewItem } from 'components/PreviewItem';
-import { fake, fake2, fake3 } from 'utils/helper';
 import { useHistory } from 'react-router-dom';
-import { Rating } from '@mui/material';
+import { Rating, Slider } from '@mui/material';
+import AXIOS from 'services/axios';
 
 export const Search = () => {
   const [search, setSearch] = useState('');
   const [isSearch, setIsSearch] = useState(false);
   const history = useHistory();
+  const [foods, setFoods] = useState<any>([]);
+  const [restaurants, setRestaurants] = useState<any>([]);
   const [data, setData] = useState<any>([]);
   const [type, setType] = React.useState('食べ物');
+  const [lowPrice, setLowPrice] = useState(0);
+  const [highPrice, setHighPrice] = useState(100000);
+  const getFoods = async () => {
+    const data = await AXIOS.get('foods')
+    setFoods(data)
+  }
+
+  const getRestaurants = async () => {
+    const data = await AXIOS.get('restaurants')
+    setRestaurants(data)
+  }
+
+  useEffect(() => {
+    getFoods()
+    getRestaurants()
+  }, []);
+
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    // if (event.target.value == '日本人好む料理') {
+    //   let newData:any = []
+    //   foods.forEach((f:any) => {
+    //     let count = 0
+    //     if (f.reviews.length > 0) {
+    //       f.reviews.forEach((rv:any) => {
+    //         if (rv.rating >= 4) count += 1
+    //       })
+    //       if (count / f.reviews.length >= 0.8) newData.push(f)
+    //     } 
+    //     setData(newData)
+    //     setIsSearch(true)
+    //   })
+    // } else {
+    //   if (search == '') setIsSearch(false)
+    // }
     setType(event.target.value as string);
   };
-  console.log('data', data);
   const classes = useStyles();
   return (
     <Box>
@@ -63,12 +97,16 @@ export const Search = () => {
             value={search}
             startAdornment={<SearchIcon />}
             disableUnderline
-            onKeyDown={(e) => {
+            onKeyDown={async (e) => {
               if (e.key === 'Enter') {
                 setIsSearch(true);
                 if (type == '食べ物') {
-                  setData(fake.filter((f) => f.name.includes(search)));
-                } else setData(fake3.filter((f) => f.name.includes(search)));
+                  let results = foods.filter((f:any) => f.name.includes(search))
+                  setData(results)
+                } else {
+                  let results = restaurants.filter((f:any) => f.name.includes(search))
+                  setData(results)
+                }
               }
               if (search == '') {
                 setIsSearch(false);
@@ -102,6 +140,14 @@ export const Search = () => {
               >
                 レストラン
               </MenuItem>
+              {/* <MenuItem
+                value={'日本人好む料理'}
+                style={{
+                  color: 'black',
+                }}
+              >
+                日本人好む料理
+              </MenuItem> */}
             </Select>
           </FormControl>
         </Box>
@@ -117,7 +163,7 @@ export const Search = () => {
                 overflowY: 'auto',
               }}
             >
-              {fake.map((a, i) => {
+              {foods.length > 0 && foods.map((a:any, i:any) => {
                 return (
                   <Box
                     key={i}
@@ -127,7 +173,7 @@ export const Search = () => {
                       cursor: 'pointer',
                     }}
                     onClick={() => {
-                      history.push(`detail-food/${i + 1}`);
+                      history.push(`detail-food/${a.id}`);
                     }}
                   >
                     <PreviewItem image={a.image} name={a.name} />
@@ -145,10 +191,10 @@ export const Search = () => {
                 overflowY: 'auto',
               }}
             >
-              {fake3.map((a, i) => {
+              {restaurants.length > 0 && restaurants.map((a:any, i:any) => {
                 return (
                   <Box
-                    key={a.name}
+                    key={a.id}
                     mr={3}
                     ml={3}
                     style={{
@@ -174,6 +220,12 @@ export const Search = () => {
             marginTop: 40,
           }}
         >
+          <Slider
+            size="small"
+            defaultValue={[0, 100000]}
+            aria-label="Small"
+            valueLabelDisplay="auto"
+          />
           {data.map((x: any, i: any) => {
             return (
               <Box
@@ -190,6 +242,10 @@ export const Search = () => {
                   alignItems: 'center',
                 }}
                 key={i}
+                onClick={() => {
+                  if (type == '食べ物') history.push(`detail-food/${x.id + 1}`);
+                  else history.push(`detail-restaurant/${x.id + 1}`);
+                }}
               >
                 <CardMedia
                   image={x.image}
@@ -208,13 +264,21 @@ export const Search = () => {
                     fontWeight:600,
                     margin: '10px 0px',
                   }}>
-                    {x.price}
+                    価格: {x.price} VND
+                  </Typography>
+                }
+                {
+                  type == 'レストラン' && <Typography style={{
+                    fontWeight:600,
+                    margin: '10px 0px',
+                  }}>
+                    価格: {x.low_price} VND - {x.high_price} VND
                   </Typography>
                 }
                 <Box display='flex'>
                   <Rating
                     name="read-only"
-                    value={x.ratingStar}
+                    value={x.rating_average}
                     precision={0.5}
                     readOnly
                   />

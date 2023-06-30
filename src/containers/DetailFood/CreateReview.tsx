@@ -28,7 +28,7 @@ export const CreateReview = ({
   const classes = useStyles();
   const [rate, setRate] = useState(5);
   const [textField, setTextField] = useState('');
-  const me = JSON.parse(localStorage.getItem('me') || '');
+  const me = JSON.parse(localStorage.getItem('me') || '{}');
   const getFoods = async () => {
     const data = await AXIOS.get('foods');
     localStorage.setItem('foods', JSON.stringify(data));
@@ -165,9 +165,9 @@ const useStyles = makeStyles((theme) => ({
       color: 'black',
     },
     '& .MuiFormControl-fullWidth': {
-      border: '1px solid black',
+      border: '4px solid black',
       borderRadius: 10,
-      background: 'aquamarine',
+      // background: 'aquamarine',
     },
   },
   header: {
