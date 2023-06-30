@@ -3,16 +3,13 @@ import { Rating } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import AXIOS from 'services/axios';
-import { fake3 } from 'utils/helper';
 export const DetailRestaurant = () => {
   const { restaurantId } = useParams<{ restaurantId: string }>();
   const classes = useStyles();
-  // const data = fake3[+restaurantId - 1];
   const [data, setData] = useState<any>();
   useEffect(() => {
     const getDetail = async () => {
       const detail = (await AXIOS.get(`restaurants/${restaurantId}`)) as any;
-      console.log('detail', detail);
       setData(detail);
     };
     getDetail();
@@ -50,7 +47,7 @@ export const DetailRestaurant = () => {
         </Box>
         <Box className={classes.item}>
           <Typography>価格: </Typography>
-          <Typography>{data.low_price} - {data.high_price}</Typography>
+          <Typography>{data.low_price} VND - {data.high_price} VND</Typography>
         </Box>
         <Box className={classes.item}>
           <Typography>開店時間: </Typography>

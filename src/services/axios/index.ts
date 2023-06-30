@@ -15,14 +15,14 @@ export const setIsRefreshing = (val: boolean) => {
 };
 
 const eventChannel = new EventEmitter();
-const accessToken =
-  localStorageUtils.getItem(SecureStorageEnum.ACCESS_TOKEN) || '';
+const accessToken = localStorageUtils.getItem(SecureStorageEnum.ACCESS_TOKEN) || '';
 
 const AXIOS = axios.create({
   baseURL: process.env.REACT_APP_BE_URL,
   headers: {
     Authorization: `Bearer ${accessToken}`,
     'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': "*"
   },
   timeout: 60000,
 });

@@ -12,6 +12,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import PasswordIcon from '@mui/icons-material/Password';
 import AXIOS from 'services/axios';
 import { useHistory } from 'react-router-dom';
+import { SecureStorageEnum } from 'enums/auth';
 export const Login = () => {
   const classes = useStyles();
   const [email, setEmail] = useState('');
@@ -19,14 +20,6 @@ export const Login = () => {
   const [data, setData] = useState([]);
   const [err, setErr] = useState(false);
   const history = useHistory();
-  const getUsers = async () => {
-    const data = (await AXIOS.get('users')) as any;
-    setData(data);
-    localStorage.setItem('users', JSON.stringify(data));
-  };
-  useEffect(() => {
-    getUsers();
-  }, []);
   return (
     <Box
       display="flex"
@@ -107,18 +100,22 @@ export const Login = () => {
               width: 130,
             }}
             onClick={() => {
-              const user: any = data.filter((d: any) => d.email == email)[0];
-              console.log('user', user);
-              if (!user) {
-                setErr(true);
-              } else {
-                if (user.password == password) {
-                  localStorage.setItem('me', JSON.stringify(user));
-                  setTimeout(() => {
-                    history.push('/');
-                  }, 500);
-                } else setErr(true);
-              }
+              AXIOS.post('auths/login', {
+                email,
+                password
+              }).then((res:any) => {
+                localStorage.setItem(SecureStorageEnum.ACCESS_TOKEN, res.data.access_token)
+                AXIOS.get('auths/profile').then((res:any) => {
+                  return res.id
+                }).then((id) => {
+                  AXIOS.get(`users/${id}`).then((res:any) => {
+                    localStorage.setItem('me', JSON.stringify(res));
+                    setTimeout(() => {
+                      history.push('/');
+                    }, 500);
+                  })
+                })
+              })
             }}
           >
             ログイン

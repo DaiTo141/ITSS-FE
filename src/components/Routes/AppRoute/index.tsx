@@ -3,7 +3,7 @@ import { DetailRestaurant } from 'containers/DetailRestaurant';
 import Home from 'containers/Home';
 import { Login } from 'containers/Login';
 import { Register } from 'containers/Register';
-import { Search } from 'containers/Search/Index';
+import { Search } from 'containers/Search';
 import { clientRoutesEnum } from 'enums/routes';
 import DashBoardLayout from 'layouts/DashBoardLayout';
 import LoginLayout from 'layouts/LoginLayout';

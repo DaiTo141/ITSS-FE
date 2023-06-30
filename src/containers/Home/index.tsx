@@ -4,15 +4,31 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a lo
 import { Carousel } from 'react-responsive-carousel';
 import { PreviewItem } from 'components/PreviewItem';
 import { PreviewCommentItem } from 'components/PreviewCommentItem';
-import { bannerFake, fake, fake2 } from 'utils/helper';
 import { Rating } from '@mui/material';
 import { useHistory } from 'react-router-dom';
+import AXIOS from 'services/axios';
 
 const Home = () => {
   const classes = useStyles();
   const history = useHistory();
-  const [foods, getFoods] = useState(localStorage.getItem('foods'));
-  const [reviews, getReviews] = useState(localStorage.getItem('reviews'));
+  const [foods, setFoods] = useState<any>([]);
+  const [reviews, setReviews] = useState<any>([]);
+  
+  const getFoods = async () => {
+    const data = await AXIOS.get('foods')
+    setFoods(data)
+  }
+
+  const getReviews = async () => {
+    const data = await AXIOS.get('reviews')
+    setReviews(data)
+  }
+
+  useEffect(() => {
+    getFoods()
+    getReviews()
+  }, []);
+
   return (
     <Box>
       <Box
@@ -29,21 +45,21 @@ const Home = () => {
           transitionTime={1000}
           infiniteLoop
         >
-          {foods &&
-            JSON.parse(foods)
+          {foods.length > 0 &&
+              foods
               .slice(-3)
               .map((f: any, i: number) => {
                 return (
                   <Box
                     className={classes.wrapper}
-                    key={f.name}
+                    key={i}
                     onClick={() => {
-                      history.push(`/detail-food/${7 + i}`);
+                      history.push(`/detail-food/${f.id}`);
                     }}
                   >
                     <Box className={classes.wrapper2}>
                       <Typography>{f.name}</Typography>
-                      <Typography>価格: {f.price}</Typography>
+                      <Typography>価格: {f.price} VND</Typography>
                       <Rating
                         name="read-only"
                         value={f.rating_average}
@@ -75,8 +91,8 @@ const Home = () => {
             overflowY: 'auto',
           }}
         >
-          {foods &&
-            JSON.parse(foods).map((a: any, i: any) => {
+          {foods.length > 0 &&
+            foods.map((a: any, i: any) => {
               return (
                 <Box
                   key={i}
@@ -86,7 +102,7 @@ const Home = () => {
                     cursor: 'pointer',
                   }}
                   onClick={() => {
-                    history.push(`detail-food/${i + 1}`);
+                    history.push(`detail-food/${a.id}`);
                   }}
                 >
                   <PreviewItem image={a.image} name={a.name} />
@@ -105,7 +121,7 @@ const Home = () => {
             marginTop: 40,
           }}
         >
-          {reviews && JSON.parse(reviews).slice(-3).map((a:any, i:any) => {
+          {reviews.length > 0 && reviews.slice(-3).map((a:any, i:any) => {
             return (
               <Box key={i}>
                 <PreviewCommentItem

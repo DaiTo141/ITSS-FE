@@ -1,6 +1,6 @@
 export enum apiRoutesEnum {
-  AUTH_RENEW = '/auth/access-token',
-  LOGIN = 'auth/login',
+  AUTH_RENEW = '/auths/access-token',
+  LOGIN = 'auths/login',
 }
 
 export enum clientRoutesEnum {
