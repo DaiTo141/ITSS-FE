@@ -1,5 +1,0 @@
-!.*.js
-*.d.ts
-*.css
-serviceWorker.ts
-build/
