@@ -1,6 +1,35 @@
 import React from "react";
+import axios from "axios"
 
-export default function ModalSettingFood({ closeModalSettingFood }) {
+
+export default function ModalSettingFood({ item, closeModalSettingFood }) {
+  const updateFood = async ( event) => {
+    // event.preventDefault();
+    const name = event.target.name.value
+                  ?event.target.description.value
+                  :item.name;
+    const description = event.target.description.value
+                        ?event.target.description.value
+                        :item.description;
+    const price = event.target.price.value
+                  ?event.target.price.value
+                  :item.price;
+    const image = event.target.image.value
+                  ?event.target.image.value
+                  :item.image;
+    const body = {
+      "name": name,
+      "description": description,
+      "image": image,
+      "restaurant_id": item.restaurant_id,
+      "price": +price,
+      "rating_average": item.rating_average
+    }
+    const res = await axios.patch( process.env.REACT_APP_BE_URL + '/foods/' + item.id,
+                                    body)
+    // alert( res.status);
+
+  };
   return (
     <div className="modal">
       <div className="overlay" onClick={() => closeModalSettingFood()}></div>
@@ -19,16 +48,17 @@ export default function ModalSettingFood({ closeModalSettingFood }) {
                 className="h-40 w-72  mb-5 rounded-[32px]"
               />
             </div>
-            <form className="w-full ml-16">
+            <form className="w-full ml-16" onSubmit={updateFood}>
               <div className="mb-8">
                 <div className="h-8 mb-4 w-[30%] shadow-md  flex justify-center items-center  border border-red-500 rounded-full bg-white">
                   名前
                 </div>
                 <div className="w-full">
                   <input
+                    name="name"
                     type="text"
                     className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
-                    placeholder="................"
+                    placeholder={item.name}
                   />
                 </div>
               </div>
@@ -38,9 +68,10 @@ export default function ModalSettingFood({ closeModalSettingFood }) {
                 </div>
                 <div className="w-full">
                   <input
+                    name="description"
                     type="text"
                     className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
-                    placeholder="................"
+                    placeholder={item.description}
                   />
                 </div>
               </div>
@@ -50,9 +81,10 @@ export default function ModalSettingFood({ closeModalSettingFood }) {
                 </div>
                 <div className="w-full">
                   <input
+                    name="price"
                     type="text"
                     className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
-                    placeholder="................"
+                    placeholder={item.price}
                   />
                 </div>
               </div>
@@ -62,15 +94,16 @@ export default function ModalSettingFood({ closeModalSettingFood }) {
                 </div>
                 <div className="w-full">
                   <input
+                    name="image"
                     type="text"
                     className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
-                    placeholder="................"
+                    placeholder={item.image}
                   />
                 </div>
               </div>
               <div className="w-full flex justify-end">
                 <button
-                  type="button"
+                  type="submit"
                   className="text-black bg-white hover:bg-gray-300 border border-red-500 rounded-full font-medium shadow-md text-xl flex items-center px-10 py-4 "
                 >
                   編集

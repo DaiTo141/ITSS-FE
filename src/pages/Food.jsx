@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import RowFoods from "../components/RowFoods";
 import Pagination from "../components/Pagination";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { BiSearchAlt } from "react-icons/bi";
 import ModalNewFood from "../components/ModalNewFood";
-// import AXIOS from 'services/axios';
+import axios from "axios"
 
 export default function Food() {
   const [modalNewFood, setModalNewFood] = useState(false);
+  const [page, setPage] = useState(1);
+  const [ listFoods, setFoods] = useState([]);
 
   const openModalNewFood = () => {
     return setModalNewFood(true);
@@ -17,33 +19,23 @@ export default function Food() {
   const closeModalNewFood = () => {
     return setModalNewFood(false);
   };
-  console.log( process.env.REACT_APP_BE_URL);
-  const listItems = [
-    {
-      id: 0,
-      name: "bánh cuốn",
-      description: "Ngon",
-      price: 3000,
-    },
-    {
-      id: 1,
-      name: "bún",
-      description: "Ngon",
-      price: 3000,
-    },
-    {
-      id: 2,
-      name: "phở",
-      description: "Ngon",
-      price: 3000,
-    },
-    {
-      id: 3,
-      name: "cua",
-      description: "Ngon",
-      price: 3000,
-    },
-  ];
+
+  const getDataPage = () => {
+    const startIndex = (page - 1) * 4;
+    const endIndex = startIndex + 4;
+    if (!listFoods) return [];
+    return listFoods.slice(startIndex, endIndex);
+  };
+
+  useEffect( () =>{
+    const getFoods = async() => {
+      const foods = await axios.get( process.env.REACT_APP_BE_URL + '/foods');
+      const foods_sort = [...foods.data].sort((a, b) => a.id - b.id);
+      // console.log( foods_sort);
+      setFoods( foods_sort);
+    };
+    getFoods();
+  },[]);
   return (
     <div className="pt-20 mx-20">
       <div className="flex justify-between ">
@@ -86,18 +78,24 @@ export default function Food() {
       </div>
       <div className="mt-16">
         <div className="w-full grid grid-cols-1 rounded-2xl text-xl border shadow-md border-black  bg-white ">
-          {listItems.map((item) => {
-            return (
-              <div key={item.id}>
-                <RowFoods item={item} />
-              </div>
-            );
-          })}
+          {listFoods.length > 0? (
+              getDataPage().map((item) => {
+                return (
+                  <div key={item.id}>
+                    <RowFoods item={item} />
+                  </div>
+                );
+              })
+              ):(
+              (
+                <div></div>
+              ))
+          }
         </div>
       </div>
       <div className="mt-10 flex justify-center items-center">
         <div className="h-10 border shadow-md border-black w-auto text-center  rounded-full  bg-white">
-          <Pagination pageSize={8} pages={3} />
+          <Pagination pageSize={8} pages={page}/>
         </div>
       </div>
       {modalNewFood && <ModalNewFood closeModalNewFood={closeModalNewFood} />}
