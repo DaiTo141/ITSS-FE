@@ -2,24 +2,24 @@ import React, { useEffect, useState } from "react";
 import Api from "../services/axios";
 
 export default function ModalNewFood({ closeModalNewFood }) {
-  const insertFood = async ( event) => {
-    // event.preventDefault();
-    const name = event.target.name.value
-    const description = event.target.description.value
-    const price = event.target.price.value
-    const image = event.target.image.value
-    const body = {
-      "name": name,
-      "description": description,
-      "image": image,
-      "restaurant_id": 0,
-      "price": +price,
-      "rating_average": 0
-    }
-    const res = await axios.post( process.env.REACT_APP_BE_URL + '/foods',
-                                    body)
-    // alert( res.status);
-
+  const [name, setName] = useState('')
+  const [description, setDescription] = useState('')
+  const [price, setPrice] = useState('')
+  const [image, setImage] = useState('')
+  const [restaurant_id, setRestaurantId] = useState(0)
+  const [restaurantList, setRestaurantList] = useState([])
+  const insertFood = () => {
+    Api.post('/foods',{
+        name,
+        description,
+        image,
+        restaurant_id:2,
+        price: +price,
+        rating_average: 0
+      }
+    ).then((res) => {
+      console.log(res)
+    })
   };
   useEffect(() => {
     Api.get(
@@ -75,7 +75,6 @@ export default function ModalNewFood({ closeModalNewFood }) {
               </div>
               <div className="w-full">
                 <input
-                  name="price"
                   required
                   type="number"
                   className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
@@ -90,7 +89,6 @@ export default function ModalNewFood({ closeModalNewFood }) {
               </div>
               <div className="w-full">
                 <input
-                  name="image"
                   required
                   type="text"
                   className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
@@ -105,7 +103,6 @@ export default function ModalNewFood({ closeModalNewFood }) {
               </div>
               <div className="w-full">
                 <select
-                  name="image"
                   required
                   className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
                   onChange={(e) => setRestaurantId(e.target.value)}

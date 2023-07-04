@@ -11,15 +11,17 @@ export default function ModalNewRes({ closeModalNewRes }) {
   const [open_time, setOpenTime] = useState('9')
   const [close_time, setCloseTime] = useState('23')
   const [image, setImage] = useState('')
-  const insertRes = () => {
+  const insertRes = ( event) => {
     Api.post('/restaurants',{
-        name,
-        image,
-        low_price,
-        high_price,
-        address,
-        website: web,
-        phone_number: phone,
+        "name": name,
+        "image": image,
+        "low_price":low_price,
+        "high_price":high_price,
+        "address":address,
+        "website": web,
+        "phone_number": phone,
+        "open_time":open_time,
+        "close_time": close_time,
         rating_average: 0
       }
     ).then((res) => {
@@ -36,16 +38,19 @@ export default function ModalNewRes({ closeModalNewRes }) {
           </div>
         </div>
         <div className="w-full px-10">
-          <form className="w-full">
+          <form className="w-full" onSubmit={insertRes}>
             <div className="mb-8">
               <div className="h-8 mb-4 w-[30%] shadow-md  flex justify-center items-center  border border-red-500 rounded-full bg-white">
                 名前
               </div>
               <div className="w-full">
                 <input
+                  name="name"
+                  required
                   type="text"
                   className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
                   placeholder="................"
+                  onChange={(e) => setName(e.target.value)}
                 />
               </div>
             </div>
@@ -55,39 +60,115 @@ export default function ModalNewRes({ closeModalNewRes }) {
               </div>
               <div className="w-full">
                 <input
+                  required
                   type="text"
                   className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
                   placeholder="................"
+                  onChange={(e) => setAddress(e.target.value)}
                 />
               </div>
             </div>
             <div className="mb-8">
               <div className="h-8 mb-4 w-[30%] shadow-md  flex justify-center items-center  border border-red-500 rounded-full bg-white">
-                価格
+                web
               </div>
               <div className="w-full">
                 <input
+                  required
                   type="text"
                   className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
                   placeholder="................"
+                  onChange={(e) => setWeb(e.target.value)}
                 />
               </div>
             </div>
             <div className="mb-8">
               <div className="h-8 mb-4 w-[30%] shadow-md  flex justify-center items-center  border border-red-500 rounded-full bg-white">
-                レーティング
+              phone
               </div>
               <div className="w-full">
                 <input
+                  required
                   type="text"
                   className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
                   placeholder="................"
+                  onChange={(e) => setPhone(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="mb-8">
+              <div className="h-8 mb-4 w-[30%] shadow-md  flex justify-center items-center  border border-red-500 rounded-full bg-white">
+              low_price
+              </div>
+              <div className="w-full">
+                <input
+                  required
+                  type="number"
+                  className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
+                  placeholder="................"
+                  onChange={(e) => setLowPrice(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="mb-8">
+              <div className="h-8 mb-4 w-[30%] shadow-md  flex justify-center items-center  border border-red-500 rounded-full bg-white">
+              high_price
+              </div>
+              <div className="w-full">
+                <input
+                  required
+                  type="number"
+                  className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
+                  placeholder="................"
+                  onChange={(e) => setHighPrice(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="mb-8">
+              <div className="h-8 mb-4 w-[30%] shadow-md  flex justify-center items-center  border border-red-500 rounded-full bg-white">
+              open_time
+              </div>
+              <div className="w-full">
+                <input
+                  required
+                  type="number"
+                  className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
+                  placeholder="................"
+                  onChange={(e) => setOpenTime(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="mb-8">
+              <div className="h-8 mb-4 w-[30%] shadow-md  flex justify-center items-center  border border-red-500 rounded-full bg-white">
+              close_time
+              </div>
+              <div className="w-full">
+                <input
+                  required
+                  type="number"
+                  className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
+                  placeholder="................"
+                  onChange={(e) => setCloseTime(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="mb-8">
+              <div className="h-8 mb-4 w-[30%] shadow-md  flex justify-center items-center  border border-red-500 rounded-full bg-white">
+              image
+              </div>
+              <div className="w-full">
+                <input
+                  required
+                  type="number"
+                  className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
+                  placeholder="................"
+                  onChange={(e) => setImage(e.target.value)}
                 />
               </div>
             </div>
             <div className="w-full flex justify-end">
               <button
-                type="button"
+                type="submit"
                 className="text-black bg-white hover:bg-gray-300 border border-red-500 rounded-xl font-medium shadow-md text-xl flex items-center px-10 py-4 "
               >
                 追加

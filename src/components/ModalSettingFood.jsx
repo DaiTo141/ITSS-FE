@@ -6,7 +6,7 @@ export default function ModalSettingFood({ item, closeModalSettingFood }) {
   const updateFood = async ( event) => {
     // event.preventDefault();
     const name = event.target.name.value
-                  ?event.target.description.value
+                  ?event.target.name.value
                   :item.name;
     const description = event.target.description.value
                         ?event.target.description.value
@@ -28,6 +28,7 @@ export default function ModalSettingFood({ item, closeModalSettingFood }) {
     const res = await axios.patch( process.env.REACT_APP_BE_URL + '/foods/' + item.id,
                                     body)
     // alert( res.status);
+    console.log( res);
 
   };
   return (
