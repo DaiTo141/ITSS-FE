@@ -3,7 +3,7 @@ import axios from "axios"
 
 export default function ModalDelete({ url, closeModalDelete }) {
   const deleteFood = async()=>{
-    // const res = await axios.delete( url);
+    const res = await axios.delete( url);
     // alert( res.status);
     closeModalDelete();
   };

@@ -11,7 +11,7 @@ export default function ModalNewFood({ closeModalNewFood }) {
       "name": name,
       "description": description,
       "image": image,
-      "restaurant_id": 0,
+      "restaurant_id": 1,
       "price": +price,
       "rating_average": 0
     }

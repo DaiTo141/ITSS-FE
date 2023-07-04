@@ -1,52 +1,38 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BiSearchAlt } from "react-icons/bi";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import RowRestaurant from "../components/RowRestaurant";
 import Pagination from "../components/Pagination";
 import ModalNewRes from "../components/ModalNewRes";
+import axios from "axios"
 
 export default function Restaurant() {
   const [modalNewRes, setModalNewRes] = useState(false);
-
+  const [page, setPage] = useState(1);
+  const [ listRes, setRes] = useState([]);
   const openModalNewRes = () => {
     return setModalNewRes(true);
   };
-
+  const getDataPage = () => {
+    const startIndex = (page - 1) * 4;
+    const endIndex = startIndex + 4;
+    if (!listRes) return [];
+    return listRes.slice(startIndex, endIndex);
+  };
   const closeModalNewRes = () => {
     return setModalNewRes(false);
   };
-
-  const listItems = [
-    {
-      id: 0,
-      name: "Nhà hàng bánh cuốn",
-      address: "Hà nội",
-      price: 3000,
-      rating: "5 sao",
-    },
-    {
-      id: 1,
-      name: "Nhà hàng bún",
-      address: "Hà nội",
-      price: 3000,
-      rating: "5 sao",
-    },
-    {
-      id: 2,
-      name: "Nhà hàng phở",
-      address: "Đà nẵng , hà nội, hồ chí minh",
-      price: 3000,
-      rating: "5 sao",
-    },
-    {
-      id: 3,
-      name: "Nhà hàng cua",
-      address: "Đà nẵng",
-      price: 3000,
-      rating: "5 sao",
-    },
-  ];
+  useEffect( () =>{
+    const getRes = async() => {
+      const ress = await axios.get( process.env.REACT_APP_BE_URL + '/restaurants');
+      const ress_sort = [...ress.data].sort((a, b) => a.id - b.id);
+      console.log( ress_sort);
+      setRes( ress_sort);
+    };
+    getRes();
+  },[]);
+  
   return (
     <div className="pt-20 mx-20">
       <div className="flex justify-between ">
@@ -88,18 +74,24 @@ export default function Restaurant() {
       </div>
       <div className="mt-16">
         <div className="w-full grid grid-cols-1 rounded-2xl text-xl border shadow-md border-black  bg-white ">
-          {listItems.map((item) => {
-            return (
-              <div key={item.id}>
-                <RowRestaurant item={item} />
-              </div>
-            );
-          })}
+        {listRes.length > 0? (
+              getDataPage().map((item) => {
+                return (
+                  <div key={item.id}>
+                    <RowRestaurant item={item} />
+                  </div>
+                );
+              })
+              ):(
+              (
+                <div></div>
+              ))
+          }
         </div>
       </div>
       <div className="mt-10 flex justify-center items-center">
         <div className="h-10 border shadow-md border-black w-auto text-center  rounded-full  bg-white">
-          <Pagination pageSize={8} pages={3} />
+          <Pagination pageSize={8} pages={page} />
         </div>
       </div>
 
