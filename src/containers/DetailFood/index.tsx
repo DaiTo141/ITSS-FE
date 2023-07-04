@@ -148,7 +148,7 @@ export const DetailFood = () => {
                     </Box>
                     <Rating
                       name="read-only"
-                      value={4}
+                      value={r.rating}
                       precision={0.5}
                       readOnly
                     />

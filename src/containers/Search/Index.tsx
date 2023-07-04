@@ -14,20 +14,22 @@ import React, { useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import { PreviewCommentItem } from 'components/PreviewCommentItem';
 import { PreviewItem } from 'components/PreviewItem';
-import { fake, fake2, fake3 } from 'utils/helper';
 import { useHistory } from 'react-router-dom';
-import { Rating } from '@mui/material';
-
+import { Pagination, Rating } from '@mui/material';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 export const Search = () => {
   const [search, setSearch] = useState('');
   const [isSearch, setIsSearch] = useState(false);
   const history = useHistory();
   const [data, setData] = useState<any>([]);
   const [type, setType] = React.useState('食べ物');
+  const restaurants = JSON.parse(localStorage.getItem('restaurants') || '');
+  const foods = JSON.parse(localStorage.getItem('foods') || '');
+  const [sort, setSort] = useState('');
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setType(event.target.value as string);
   };
-  console.log('data', data);
   const classes = useStyles();
   return (
     <Box>
@@ -67,8 +69,15 @@ export const Search = () => {
               if (e.key === 'Enter') {
                 setIsSearch(true);
                 if (type == '食べ物') {
-                  setData(fake.filter((f) => f.name.includes(search)));
-                } else setData(fake3.filter((f) => f.name.includes(search)));
+                  console.log(
+                    'foods.filter((f:any) => f.name.includes(search))',
+                    foods.filter((f: any) => f.name.includes(search)),
+                  );
+                  setData(foods.filter((f: any) => f.name.includes(search)));
+                } else
+                  setData(
+                    restaurants.filter((f: any) => f.name.includes(search)),
+                  );
               }
               if (search == '') {
                 setIsSearch(false);
@@ -106,6 +115,42 @@ export const Search = () => {
           </FormControl>
         </Box>
       </CardMedia>
+      {isSearch && type == '食べ物' && (
+        <Box mt={8} className="center-root">
+          <Box
+            className={classes.filterItem}
+            onClick={() => {
+              if (!sort) setSort('priceUp');
+              sort == 'priceUp' ? setSort('priceDown') : setSort('priceUp');
+              const temp = data.sort((a: any, b: any) => {
+                if (sort == 'priceUp') return a.price - b.price;
+                else return b.price - a.price;
+              });
+              setData(temp);
+            }}
+          >
+            <Typography>価格</Typography>
+            {sort == 'priceDown' && <ArrowUpwardIcon color="success" />}
+            {sort == 'priceUp' && <ArrowDownwardIcon color="warning" />}
+          </Box>
+          <Box
+            className={classes.filterItem}
+            onClick={() => {
+              if (!sort) setSort('rateDown');
+              sort == 'rateDown' ? setSort('rateUp') : setSort('rateDown');
+              const temp = data.sort((a: any, b: any) => {
+                if (sort == 'rateDown') return a.rating_average - b.rating_average;
+                else return b.rating_average - a.rating_average;
+              });
+              setData(temp);
+            }}
+          >
+            <Typography>レーティング</Typography>
+            {sort == 'rateUp' && <ArrowUpwardIcon color="success" />}
+            {sort == 'rateDown' && <ArrowDownwardIcon color="warning" />}
+          </Box>
+        </Box>
+      )}
       {!isSearch && (
         <Box mt={10}>
           <Box className={classes.menu}>
@@ -117,7 +162,7 @@ export const Search = () => {
                 overflowY: 'auto',
               }}
             >
-              {fake.map((a, i) => {
+              {foods.map((a: any, i: number) => {
                 return (
                   <Box
                     key={i}
@@ -145,7 +190,7 @@ export const Search = () => {
                 overflowY: 'auto',
               }}
             >
-              {fake3.map((a, i) => {
+              {restaurants.map((a: any, i: number) => {
                 return (
                   <Box
                     key={a.name}
@@ -188,6 +233,12 @@ export const Search = () => {
                   flexDirection: 'column',
                   justifyContent: 'center',
                   alignItems: 'center',
+                  cursor: 'pointer',
+                }}
+                onClick={() => {
+                  if (type == '食べ物') {
+                    history.push(`detail-food/${x.id}`);
+                  } else history.push(`detail-restaurant/${x.id}`);
                 }}
                 key={i}
               >
@@ -199,22 +250,28 @@ export const Search = () => {
                     borderRadius: 20,
                   }}
                 />
-                <Typography style={{
-                  fontWeight:600,
-                  margin: '10px 0px',
-                }}>{x.name}</Typography>
-                {
-                  type == '食べ物' && <Typography style={{
-                    fontWeight:600,
+                <Typography
+                  style={{
+                    fontWeight: 600,
                     margin: '10px 0px',
-                  }}>
+                  }}
+                >
+                  {x.name}
+                </Typography>
+                {type == '食べ物' && (
+                  <Typography
+                    style={{
+                      fontWeight: 600,
+                      margin: '10px 0px',
+                    }}
+                  >
                     {x.price}
                   </Typography>
-                }
-                <Box display='flex'>
+                )}
+                <Box display="flex">
                   <Rating
                     name="read-only"
-                    value={x.ratingStar}
+                    value={x.rating_average}
                     precision={0.5}
                     readOnly
                   />
@@ -222,6 +279,11 @@ export const Search = () => {
               </Box>
             );
           })}
+        </Box>
+      )}
+      {isSearch && (
+        <Box className="center-root">
+          <Pagination count={1} />
         </Box>
       )}
     </Box>
@@ -260,5 +322,18 @@ const useStyles = makeStyles((theme) => ({
       color: 'black',
       background: 'white',
     },
+  },
+  filterItem: {
+    margin: '0px 20px',
+    display: 'flex',
+    '& p': {
+      fontWeight: 600,
+      marginRight: 12,
+    },
+    border: '1px solid black',
+    borderRadius: '20px',
+    padding: '4px 12px',
+    background: 'white',
+    cursor: 'pointer',
   },
 }));
