@@ -1,44 +1,31 @@
-import React from "react";
-import Pagination from "../components/Pagination";
+import React, {useState, useEffect} from "react";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { BiSearchAlt } from "react-icons/bi";
 import RowReview from "../components/RowReview";
+import Api from "../services/axios";
+import { Pagination } from "@mui/material";
 
 export default function Review() {
-  const listItems = [
-    {
-      id: 0,
-      name: "Dức",
-      food: "Phở",
-      rating: "5 sao",
-      review: "như cứt",
-      date: "04/03/2023",
-    },
-    {
-      id: 1,
-      name: "Dức",
-      food: "Phở",
-      rating: "5 sao",
-      review: "như cứt",
-      date: "04/03/2023",
-    },
-    {
-      id: 2,
-      name: "Dức",
-      food: "Phở",
-      rating: "5 sao",
-      review: "như cứt",
-      date: "04/03/2023",
-    },
-    {
-      id: 3,
-      name: "Dức",
-      food: "Phở",
-      rating: "5 sao",
-      review: "như cứt",
-      date: "04/03/2023",
-    },
-  ];
+  const [reviews, setReviews] = useState([])
+  const [name, setName] = useState('')
+  const [page, setPage] = useState(1)
+  const getDataPage = () => {
+    const startIndex = (page - 1) * 8;
+    const endIndex = startIndex + 8;
+    if (!reviews) return [];
+    return reviews.slice(startIndex, endIndex);
+  };
+
+  useEffect(() => {
+    Api.get('reviews', {
+      params: {
+        name
+      }
+    }).then(res => {
+      res.data.sort((a, b) => a.id - b.id)
+      setReviews(res.data)
+    })
+  }, [name])
   return (
     <div className="pt-20 mx-20">
       <div className="flex justify-between ">
@@ -51,7 +38,8 @@ export default function Review() {
               type="text"
               id="simple-search"
               className=" border shadow-md border-black text-gray-900 text-xl rounded-xl block w-full pl-20 py-3 pr-10  "
-              placeholder="レビュー"
+              placeholder="レビューのユーザー"
+              onChange={e => setName(e.target.value)}
             />
           </div>
           <div className="h-14 w-16 shadow-md ml-5 flex justify-center items-center border border-black rounded-xl bg-white">
@@ -78,7 +66,7 @@ export default function Review() {
       </div>
       <div className="mt-16">
         <div className="w-full grid grid-cols-1 rounded-2xl text-xl border shadow-md border-black  bg-white ">
-          {listItems.map((item) => {
+          {getDataPage().map((item) => {
             return (
               <div key={item.id}>
                 <RowReview item={item} />
@@ -89,7 +77,12 @@ export default function Review() {
       </div>
       <div className="mt-10 flex justify-center items-center">
         <div className="h-10 border shadow-md border-black w-auto text-center  rounded-full  bg-white">
-          <Pagination pageSize={8} pages={3} />
+          <Pagination
+            count={Math.ceil(reviews ? reviews.length / 8 : 2)}
+            onChange={(e, page) => {
+              setPage(page);
+            }}
+          />
         </div>
       </div>
     </div>

@@ -1,5 +1,6 @@
-import React from "react";
-import axios from "axios"
+import React, { useEffect, useState } from "react";
+import Api from "../services/axios";
+
 export default function ModalNewFood({ closeModalNewFood }) {
   const insertFood = async ( event) => {
     // event.preventDefault();
@@ -11,7 +12,7 @@ export default function ModalNewFood({ closeModalNewFood }) {
       "name": name,
       "description": description,
       "image": image,
-      "restaurant_id": 1,
+      "restaurant_id": 0,
       "price": +price,
       "rating_average": 0
     }
@@ -20,6 +21,13 @@ export default function ModalNewFood({ closeModalNewFood }) {
     // alert( res.status);
 
   };
+  useEffect(() => {
+    Api.get(
+      '/restaurants'
+    ).then((res) => {
+      setRestaurantList(res.data)
+    })
+  }, [])
   return (
     <div className="modal">
       <div className="overlay" onClick={() => closeModalNewFood()}></div>
@@ -42,6 +50,7 @@ export default function ModalNewFood({ closeModalNewFood }) {
                   type="text"
                   className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
                   placeholder="................"
+                  onChange={(e) => setName(e.target.value)}
                 />
               </div>
             </div>
@@ -56,6 +65,7 @@ export default function ModalNewFood({ closeModalNewFood }) {
                   type="text"
                   className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
                   placeholder="................"
+                  onChange={(e) => setDescription(e.target.value)}
                 />
               </div>
             </div>
@@ -67,26 +77,51 @@ export default function ModalNewFood({ closeModalNewFood }) {
                 <input
                   name="price"
                   required
-                  type="text"
+                  type="number"
                   className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
                   placeholder="................"
+                  onChange={(e) => setPrice(e.target.value)}
                 />
               </div>
             </div>
             <div className="mb-8">
-                <div className="h-8 mb-4 w-[30%] shadow-md  flex justify-center items-center  border border-red-500 rounded-full bg-white">
-                  イメージ
-                </div>
-                <div className="w-full">
-                  <input
-                    name="image"
-                    required
-                    type="text"
-                    className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
-                    placeholder="................"
-                  />
-                </div>
+              <div className="h-8 mb-4 w-[30%] shadow-md  flex justify-center items-center  border border-red-500 rounded-full bg-white">
+                イメージ
               </div>
+              <div className="w-full">
+                <input
+                  name="image"
+                  required
+                  type="text"
+                  className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
+                  placeholder="................"
+                  onChange={(e) => setImage(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="mb-8">
+              <div className="h-8 mb-4 w-[30%] shadow-md  flex justify-center items-center  border border-red-500 rounded-full bg-white">
+                レストラン
+              </div>
+              <div className="w-full">
+                <select
+                  name="image"
+                  required
+                  className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
+                  onChange={(e) => setRestaurantId(e.target.value)}
+                >
+                  {restaurantList.map((value) => {
+                    return (
+                    <option value={value.id} >
+                      {value.name}
+                    </option>
+                    )
+                  })
+
+                  }
+                </select>
+              </div>
+            </div>
             <div className="w-full flex justify-end">
               <button
                 type="submit"

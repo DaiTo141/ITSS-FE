@@ -37,7 +37,7 @@ export default function RowRestaurant({ item }) {
         {item.address}
       </div>
       <div className="flex justify-center items-center truncate">
-        {item.low_price + " - " + item.high_price}
+      {item.low_price} - {item.high_price}
       </div>
       <div className="flex justify-center items-center truncate">
         {item.rating_average}
