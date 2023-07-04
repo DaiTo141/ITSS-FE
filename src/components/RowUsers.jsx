@@ -41,17 +41,17 @@ export default function RowUsers({ item }) {
         {item.name}
       </div>
       <div className="flex justify-center items-center truncate">
-        {item.mail}
+        {item.email}
       </div>
       <div className="flex justify-center items-center truncate">
-        {item.phone}
+        {item.status}
       </div>
       <div className="flex justify-center items-center truncate">
-        {item.password}
+        {item.nation}
       </div>
-      <div className="flex justify-center items-center truncate">
-        {item.roles}
-      </div>
+      {/* <div className="flex justify-center items-center truncate">
+        {item.role}
+      </div> */}
       <div className="flex justify-center text-3xl text-gray-500 items-center">
         <AiOutlinePlusCircle
           className="mx-2 hover:text-blue-500 cursor-pointer"

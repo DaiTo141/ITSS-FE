@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import RowInfo from "../components/RowInfo";
-import Pagination from "../components/Pagination";
+// import Pagination from "../components/Pagination";
 import ModalDelete from "../components/ModalDelete";
 
 export default function Info() {
@@ -118,7 +118,7 @@ export default function Info() {
       </div>
       <div className="mt-10 flex justify-center items-center">
         <div className="h-10 border shadow-md border-black w-auto text-center  rounded-full  bg-white">
-          <Pagination pageSize={8} pages={3} />
+          {/* <Pagination pageSize={8} pages={3} /> */}
         </div>
       </div>
       {modalDelete && <ModalDelete closeModalDelete={closeModalDelete} />}
