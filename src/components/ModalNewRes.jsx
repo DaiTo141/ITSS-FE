@@ -1,6 +1,31 @@
-import React from "react";
+import React, {useState} from "react";
+import Api from "../services/axios";
 
 export default function ModalNewRes({ closeModalNewRes }) {
+  const [name, setName] = useState('')
+  const [address, setAddress] = useState('')
+  const [web, setWeb] = useState('')
+  const [phone, setPhone] = useState('')
+  const [low_price, setLowPrice] = useState(0)
+  const [high_price, setHighPrice] = useState(0)
+  const [open_time, setOpenTime] = useState('9')
+  const [close_time, setCloseTime] = useState('23')
+  const [image, setImage] = useState('')
+  const insertRes = () => {
+    Api.post('/restaurants',{
+        name,
+        image,
+        low_price,
+        high_price,
+        address,
+        website: web,
+        phone_number: phone,
+        rating_average: 0
+      }
+    ).then((res) => {
+      console.log(res)
+    })
+  };
   return (
     <div className="modal">
       <div className="overlay" onClick={() => closeModalNewRes()}></div>

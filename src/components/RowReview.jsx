@@ -19,19 +19,19 @@ export default function RowReview({ item }) {
         {item.id}
       </div>
       <div className="flex justify-center items-center truncate">
-        {item.name}
+        {item.user.name}
       </div>
       <div className="flex justify-center items-center truncate">
-        {item.food}
+        {item.food.name}
       </div>
       <div className="flex justify-center items-center truncate">
         {item.rating}
       </div>
       <div className="flex justify-center items-center truncate">
-        {item.review}
+        {item.review_text}
       </div>
       <div className="flex justify-center items-center truncate">
-        {item.date}
+        {new Date(item.review_date).toDateString()}
       </div>
       <div className="flex justify-center text-3xl text-gray-500 items-center">
         <FiSettings className="mx-2 hover:text-blue-500 cursor-pointer" />

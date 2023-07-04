@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import RowFoods from "../components/RowFoods";
-import Pagination from "../components/Pagination";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { BiSearchAlt } from "react-icons/bi";
 import ModalNewFood from "../components/ModalNewFood";
-import axios from "axios"
+import Api from "../services/axios";
+import { Pagination } from '@mui/material';
 
 export default function Food() {
+  const [name, setName] = useState('')
   const [modalNewFood, setModalNewFood] = useState(false);
   const [page, setPage] = useState(1);
-  const [ listFoods, setFoods] = useState([]);
+  const [foods, setFoods] = useState([]);
 
   const openModalNewFood = () => {
     return setModalNewFood(true);
@@ -21,21 +22,23 @@ export default function Food() {
   };
 
   const getDataPage = () => {
-    const startIndex = (page - 1) * 4;
-    const endIndex = startIndex + 4;
-    if (!listFoods) return [];
-    return listFoods.slice(startIndex, endIndex);
+    const startIndex = (page - 1) * 8;
+    const endIndex = startIndex + 8;
+    if (!foods) return [];
+    return foods.slice(startIndex, endIndex);
   };
 
-  useEffect( () =>{
-    const getFoods = async() => {
-      const foods = await axios.get( process.env.REACT_APP_BE_URL + '/foods');
-      const foods_sort = [...foods.data].sort((a, b) => a.id - b.id);
-      // console.log( foods_sort);
-      setFoods( foods_sort);
-    };
-    getFoods();
-  },[]);
+  useEffect(() => {
+    Api.get('/foods', {
+      params: {
+        name
+      }
+    }).then((res) => {
+      res.data.sort((a, b) => a.id - b.id)
+      setFoods(res.data)
+    })
+  },[name]);
+
   return (
     <div className="pt-20 mx-20">
       <div className="flex justify-between ">
@@ -49,6 +52,7 @@ export default function Food() {
               id="simple-search"
               className=" border shadow-md border-black text-gray-900 text-xl rounded-xl block w-full pl-20 py-3 pr-10  "
               placeholder="料理の名前"
+              onChange={e => {setName(e.target.value)}}
             />
           </div>
           <div className="h-14 w-16 shadow-md ml-5 flex justify-center items-center border border-black rounded-xl bg-white">
@@ -78,7 +82,7 @@ export default function Food() {
       </div>
       <div className="mt-16">
         <div className="w-full grid grid-cols-1 rounded-2xl text-xl border shadow-md border-black  bg-white ">
-          {listFoods.length > 0? (
+          {foods.length > 0? (
               getDataPage().map((item) => {
                 return (
                   <div key={item.id}>
@@ -95,7 +99,12 @@ export default function Food() {
       </div>
       <div className="mt-10 flex justify-center items-center">
         <div className="h-10 border shadow-md border-black w-auto text-center  rounded-full  bg-white">
-          <Pagination pageSize={8} pages={page}/>
+          <Pagination
+            count={Math.ceil(foods ? foods.length / 8 : 2)}
+            onChange={(e, page) => {
+              setPage(page);
+            }}
+          />
         </div>
       </div>
       {modalNewFood && <ModalNewFood closeModalNewFood={closeModalNewFood} />}
