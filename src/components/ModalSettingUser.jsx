@@ -9,6 +9,7 @@ export default function ModalSettingUser({item, closeModalSettingUser }) {
   const [image, setImage] = useState(item.image)
   const [nation, setNation] = useState(item.nation)
   const updateUser = () => {
+    console.log( nation);
     Api.patch(`/users/${item.id}`, {
       name,
       email,
@@ -74,18 +75,18 @@ export default function ModalSettingUser({item, closeModalSettingUser }) {
               </div>
               <div className="w-full">
                 <select
-                  className=" border shadow-md w-full border-red-500 p-3 rounded-full "
-                  value={nation}
-                  onSelect={e => setNation(e.target.value)}
-                >
-                  <option key={'jp'} value={'jp'}>日本人</option>
-                  <option key={'vi'} value={'vi'}>ベトナム人</option>
-                </select>
+                className=" border shadow-md w-full border-red-500 p-3 rounded-full "
+                defaultValue={item.nation}
+                onChange={(e) => setNation(e.target.value)}
+                 >
+                   <option key={'jp'} value={'jp'}>日本人</option>
+                   <option key={'vi'} value={'vi'}>ベトナム人</option>
+                 </select> 
               </div>
             </div>
             <div className="w-full flex justify-end">
               <button
-                type="button"
+                type="submit"
                 className="text-black bg-white hover:bg-gray-300 border border-red-500 rounded-xl font-medium shadow-md text-xl flex items-center px-10 py-4 "
               >
                 編集
