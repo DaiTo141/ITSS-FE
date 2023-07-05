@@ -63,7 +63,7 @@ const Home = () => {
                       <Rating
                         name="read-only"
                         value={f.rating_average}
-                        precision={0.5}
+                        precision={1}
                         readOnly
                         style={{
                           margin: '8px 0px',

@@ -5,25 +5,23 @@ import {
   Typography,
   makeStyles,
 } from '@material-ui/core';
+
 import React, { useEffect, useState } from 'react';
 import HomeIcon from '@mui/icons-material/Home';
 import SearchIcon from '@mui/icons-material/Search';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import PersonIcon from '@mui/icons-material/Person';
 import MenuIcon from '@mui/icons-material/Menu';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
-import AXIOS from 'services/axios';
 import { SecureStorageEnum } from 'enums/auth';
+
 export const NavBar = () => {
   const classes = useStyles();
   const [active, setActive] = useState('home');
   const me = localStorage.getItem('me');
   const history = useHistory();
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
-    null,
-  );
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -93,14 +91,19 @@ export const NavBar = () => {
         >
           <SearchIcon fontSize="large" />
         </Box>
+        { localStorage.getItem('me') &&
         <Box
           className={clsx(classes.item, {
-            [classes.active]: active == 'noti',
+            [classes.active]: active == 'profile',
           })}
-          onClick={() => setActive('noti')}
+          onClick={() => {
+            setActive('profile')
+            history.push('/profile')
+          }}
         >
-          <NotificationsIcon fontSize="large" />
+          <PersonIcon fontSize="large" />
         </Box>
+        }
       </Box>
       <Box
         style={{
@@ -143,6 +146,7 @@ export const NavBar = () => {
             onClick={() => {
               if (me) {
                 history.push('/profile')
+                setActive('profile')
               } else {
                 history.push('/login');
               }

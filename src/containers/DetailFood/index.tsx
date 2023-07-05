@@ -19,6 +19,7 @@ export const DetailFood = () => {
   const [data, setData] = useState<any>({});
   const history = useHistory();
   const [open, setOpen] = React.useState(false);
+  const [review, setReview] = React.useState<any>(null);
   const handleOpen = () => {
     if (!localStorage.getItem('me')) {
       history.push('/login');
@@ -33,14 +34,18 @@ export const DetailFood = () => {
     if (!data.reviews) return [];
     return data.reviews.slice(startIndex, endIndex);
   };
-  useEffect(() => {
+
+  const getFood = (foodId:any) => {
     AXIOS.get(`foods/${foodId}`).then((food:any) => {
       const reviews = food.reviews.reverse();
       food.reviews = reviews;
       setData(food);
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [foodId]);
+  }
+
+  useEffect(() => {
+    getFood(foodId)
+  }, [foodId, open]);
 
   if (JSON.stringify(data) == '{}') return <Box></Box>;
   
@@ -74,7 +79,7 @@ export const DetailFood = () => {
           <Rating
             name="read-only"
             value={data.rating_average}
-            precision={0.5}
+            precision={1}
             readOnly
           />
         </Box>
@@ -83,6 +88,7 @@ export const DetailFood = () => {
           <Typography>{data.description}</Typography>
         </Box>
       </Box>
+      {localStorage.getItem('me') &&
       <Box
         display="flex"
         justifyContent="flex-end"
@@ -101,7 +107,7 @@ export const DetailFood = () => {
             cursor: 'pointer',
           }}
         />
-      </Box>
+      </Box>}
       <Box mt={5} width={'100%'}>
         {data.reviews.length > 0 && getDataReviewPage().map((r: any, i: any) => {
           return (
@@ -153,10 +159,24 @@ export const DetailFood = () => {
                     </Box>
                     <Rating
                       name="read-only"
-                      value={4}
-                      precision={0.5}
+                      value={r.rating}
+                      precision={1}
                       readOnly
+                      style={{
+                        marginRight: 20
+                      }}
                     />
+                    {r.user.nation == 'jp' &&
+                    <svg xmlns="http://www.w3.org/2000/svg" style={{background:"#eee", width: 40, height:28}}>
+                      <circle cx="50%" cy="50%" r="24%" fill="#bc002d"/>
+                    </svg>
+                    }
+                    {r.user.nation == 'vi' &&
+                    <svg width="40" height="28" viewBox="0 0 30 20" xmlns="http://www.w3.org/2000/svg" version="1.1">
+                      <rect width="30" height="20" fill="#da251d"/>
+                      <polygon points="15,4 11.47,14.85 20.71,8.15 9.29,8.15 18.53,14.85" fill="#ff0"/>
+                    </svg>                    
+                    }
                   </Box>
                   <Box
                     style={{
@@ -172,11 +192,10 @@ export const DetailFood = () => {
                 </Box>
               </Box>
               <Box width={120} display="flex" justifyContent="space-between">
-                {localStorage.getItem('me') &&
-                  r.user.id ==
-                    JSON.parse(localStorage.getItem('me') || '').id && (
+                {localStorage.getItem('me') && r.user.id == JSON.parse(localStorage.getItem('me') || '').id && (
                     <Box onClick={()=>{
                       setOpen(true);
+                      setReview(r)
                     }}>
                       <CardMedia
                         image="/images/chat.png"
@@ -189,29 +208,21 @@ export const DetailFood = () => {
                       />
                     </Box>
                   )}
-                {localStorage.getItem('me') &&
-                  r.user.id ==
-                    JSON.parse(localStorage.getItem('me') || '{}').id && (
+                {localStorage.getItem('me') && r.user.id == JSON.parse(localStorage.getItem('me') || '{}').id && (
                     <Box
                       style={{
                         borderRadius: 25,
                         cursor: 'pointer',
                       }}
                       onClick={async () => {
-                        const food = data;
-                        let result = food.filter(
+                        let result = data.reviews.filter(
                           (x: any) => x.id != r.id,
                         );
-                        let permisstion =
-                          confirm('本人のユーザーがコメントを除きたいか');
+                        let permisstion = confirm('本人のユーザーがコメントを除きたいか');
                         if (permisstion) {
                           setData({ ...data, reviews: result.reverse() });
                           await AXIOS.delete(`reviews/${r.id}`);
-                          const newFoods = await AXIOS.get('foods');
-                          localStorage.setItem(
-                            'foods',
-                            JSON.stringify(newFoods),
-                          );
+                          getFood(foodId)
                         }
                       }}
                     >
@@ -241,7 +252,8 @@ export const DetailFood = () => {
         handleClose={handleClose}
         handleOpen={handleOpen}
         foodId={foodId}
-        isAdd
+        review={review}
+        setReview={setReview}
       />
     </Box>
   );
