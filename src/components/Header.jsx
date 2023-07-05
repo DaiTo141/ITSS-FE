@@ -1,27 +1,28 @@
 import React from "react";
 import logoIT from "../asset/logoIT.png";
 import textLogo from "../asset/text.png";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 export default function Header() {
+  const navigate = useNavigate()
   const listItems = [
     {
-      id: 0,
+      id: 1,
       title: "レストラン一覧",
       route: "/restaurant",
     },
     {
-      id: 1,
+      id: 2,
       title: "料理一覧",
       route: "/food",
     },
     {
-      id: 2,
+      id: 3,
       title: "ユーザー一覧",
       route: "/user",
     },
     {
-      id: 3,
+      id: 4,
       title: "レビュー一覧",
       route: "/review",
     },
@@ -29,12 +30,11 @@ export default function Header() {
   return (
     <div>
       <div className="flex mx-6 p-5 justify-between items-center">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center" onClick={() => {return navigate('/', {replace: true})}}>
           <div className="h-16 w-32 mr-6 flex justify-center items-center rounded-full border border-black bg-[#C6D6DD]">
-            <img src={logoIT} alt="" className=" h-12 w-20" />
+            <img src={logoIT} alt="" className=" h-12 w-20"/>
           </div>
-
-          <img src={textLogo} alt="" className=" h-5" />
+          <img src={textLogo} alt="" className=" h-5"/>
         </div>
         <div className="flex justify-between items-center">
           <div className="font-thin mr-10 text-4xl">ADMIN</div>

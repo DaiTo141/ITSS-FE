@@ -1,25 +1,49 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import Api from "../services/axios";
 
 export default function Home() {
+  const [foods, setFoods] = useState([])
+  const [restaurants, setRestaurants] = useState([])
+  const [users, setUsers] = useState([])
+  const getUsers = () => {
+    Api.get('/users')
+      .then(res => {
+        setUsers(res.data)
+      })
+  }
+  const getFoods = () => {
+    Api.get('/foods')
+      .then(res => {
+        setFoods(res.data)
+      })
+  }
+  const getRestaurants = () => {
+    Api.get('/restaurants')
+      .then(res => {
+        setRestaurants(res.data)
+      })
+  }
+  useEffect(() => {
+    getUsers()
+    getRestaurants()
+    getFoods()
+  }, [])
   return (
     <div>
       <div className="flex justify-evenly mx-10 mt-24">
         <div className="h-32 w-80 rounded-2xl border flex justify-center items-center font-semibold border-black shadow-lg cursor-pointer bg-white">
           <div className="flex flex-col justify-center items-center text-xl">
-            <div>レストラン数:</div>
-            <div>XX</div>
+            <div>レストラン数: {restaurants.length}</div>
           </div>
         </div>
         <div className="h-32 w-80 rounded-2xl border flex justify-center items-center font-semibold border-black shadow-lg cursor-pointer bg-white">
           <div className="flex flex-col justify-center items-center text-xl">
-            <div>料理数:</div>
-            <div>XX</div>
+            <div>料理数: {foods.length}</div>
           </div>
         </div>
         <div className="h-32 w-80 rounded-2xl border flex justify-center items-center font-semibold border-black shadow-lg cursor-pointer bg-white">
           <div className="flex flex-col justify-center items-center text-xl">
-            <div>ユーザー数:</div>
-            <div>XX</div>
+            <div>ユーザー数: {users.length}</div>
           </div>
         </div>
       </div>
@@ -56,25 +80,25 @@ export default function Home() {
           <img
             src="https://vcdn-dulich.vnecdn.net/2020/01/17/26158077-167284690667495-84349-7736-6542-1579256216.jpg"
             alt=""
-            className="h-56 w-48 mb-5 rounded-full
+            className="h-48 w-48 mb-5 rounded-full
             "
           />
           <div className="text-center font-semibold">注目のユーザー</div>
         </div>
         <div>
           <img
-            src="https://vcdn-dulich.vnecdn.net/2020/01/17/26158077-167284690667495-84349-7736-6542-1579256216.jpg"
+            src={"https://vcdn-dulich.vnecdn.net/2020/01/17/26158077-167284690667495-84349-7736-6542-1579256216.jpg"}
             alt=""
-            className="h-56 w-72 mb-5 rounded-[32px]
+            className="h-56 w-76 mb-5 rounded-[32px]
             "
           />
           <div className="text-center font-semibold">注目の料理</div>
         </div>
         <div>
           <img
-            src="https://vcdn-dulich.vnecdn.net/2020/01/17/26158077-167284690667495-84349-7736-6542-1579256216.jpg"
+            src={"https://vcdn-dulich.vnecdn.net/2020/01/17/26158077-167284690667495-84349-7736-6542-1579256216.jpg"}
             alt=""
-            className="h-56 w-72 mb-5 rounded-[32px]
+            className="h-56 w-76 mb-5 rounded-[32px]
             "
           />
           <div className="text-center font-semibold">注目のレストラン</div>
