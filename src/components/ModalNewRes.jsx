@@ -16,8 +16,8 @@ export default function ModalNewRes({ closeModalNewRes }) {
     Api.post('/restaurants',{
         name,
         image,
-        low_price,
-        high_price,
+        "low_price":+low_price,
+        "high_price":+high_price,
         address,
         website: web,
         phone_number: phone,
@@ -145,7 +145,7 @@ export default function ModalNewRes({ closeModalNewRes }) {
               <div className="w-full">
                 <input
                   required
-                  type="number"
+                  type="time"
                   className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
                   placeholder={open_time}
                   onChange={(e) => setOpenTime(e.target.value)}
@@ -159,7 +159,7 @@ export default function ModalNewRes({ closeModalNewRes }) {
               <div className="w-full">
                 <input
                   required
-                  type="number"
+                  type="time"
                   className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
                   placeholder={close_time}
                   onChange={(e) => setCloseTime(e.target.value)}

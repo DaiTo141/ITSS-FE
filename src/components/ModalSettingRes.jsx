@@ -92,7 +92,6 @@ export default function ModalSettingRes({ item, closeModalSettingRes }) {
                 </div>
                 <div className="w-full">
                   <input
-                    required
                     type="text"
                     className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
                     placeholder={web ? web : '.............'}
@@ -106,7 +105,6 @@ export default function ModalSettingRes({ item, closeModalSettingRes }) {
                 </div>
                 <div className="w-full">
                   <input
-                    required
                     type="text"
                     className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
                     placeholder={phone}
@@ -146,8 +144,7 @@ export default function ModalSettingRes({ item, closeModalSettingRes }) {
                 </div>
                 <div className="w-full">
                   <input
-                    required
-                    type="number"
+                    type="time"
                     className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
                     placeholder={open_time}
                     onChange={(e) => setOpenTime(e.target.value)}
@@ -160,8 +157,7 @@ export default function ModalSettingRes({ item, closeModalSettingRes }) {
                 </div>
                 <div className="w-full">
                   <input
-                    required
-                    type="number"
+                    type="time"
                     className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
                     placeholder={close_time}
                     onChange={(e) => setCloseTime(e.target.value)}

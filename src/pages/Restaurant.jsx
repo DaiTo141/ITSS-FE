@@ -56,11 +56,6 @@ export default function Restaurant() {
               onChange={(e) => setName(e.target.value)}
             />
           </div>
-          <div 
-            className="h-14 w-16 shadow-md ml-5 flex justify-center items-center border border-black rounded-xl bg-white"
-          >
-            <MdOutlineKeyboardArrowDown className="text-4xl" />
-          </div>
         </form>
         <div>
           <div

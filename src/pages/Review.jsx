@@ -43,9 +43,6 @@ export default function Review() {
               onChange={e => setName(e.target.value)}
             />
           </div>
-          <div className="h-14 w-16 shadow-md ml-5 flex justify-center items-center border border-black rounded-xl bg-white">
-            <MdOutlineKeyboardArrowDown className="text-4xl" />
-          </div>
         </form>
         {/* <div>
           <div className="h-14 w-32 shadow-md text-xl flex justify-center items-center hover:bg-gray-200 cursor-pointer border border-black rounded-xl bg-white">
