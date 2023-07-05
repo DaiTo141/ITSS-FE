@@ -1,7 +1,7 @@
 import { Box, makeStyles } from '@material-ui/core';
 import { NavBar } from 'components/NavBar';
 import React, { ElementType, useCallback } from 'react';
-import { Route, RouteComponentProps, RouteProps } from 'react-router-dom';
+import { Route, RouteComponentProps, RouteProps, useHistory } from 'react-router-dom';
 export interface LoginLayoutProps extends RouteProps {
   RenderComponent: ElementType;
 }

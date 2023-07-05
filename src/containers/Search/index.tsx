@@ -10,15 +10,16 @@ import {
   Typography,
   makeStyles,
 } from '@material-ui/core';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import { PreviewCommentItem } from 'components/PreviewCommentItem';
 import { PreviewItem } from 'components/PreviewItem';
 import { useHistory } from 'react-router-dom';
-import { Rating, Slider } from '@mui/material';
+import { Rating, Slider, Pagination } from '@mui/material';
 import AXIOS from 'services/axios';
 
 export const Search = () => {
+  const [page, setPage] = useState(1)
   const [search, setSearch] = useState('');
   const [isSearch, setIsSearch] = useState(false);
   const history = useHistory();
@@ -26,40 +27,50 @@ export const Search = () => {
   const [restaurants, setRestaurants] = useState<any>([]);
   const [data, setData] = useState<any>([]);
   const [type, setType] = React.useState('食べ物');
-  const [lowPrice, setLowPrice] = useState(0);
-  const [highPrice, setHighPrice] = useState(100000);
-  const getFoods = async () => {
-    const data = await AXIOS.get('foods')
+  const [prices, setPrices] = useState([0, 100]);
+  const [percent, setPercent] = useState(50);
+  const getFoods = async (params:any, type:any) => {
+    const data = await AXIOS.get('foods', {
+      params: params
+    })
     setFoods(data)
+    if (type == '日本人好む料理'||type == '食べ物') setData(data)
   }
 
-  const getRestaurants = async () => {
-    const data = await AXIOS.get('restaurants')
+  const getRestaurants = async (params:any, type:any) => {
+    const data = await AXIOS.get('restaurants', {
+      params: params
+    })
     setRestaurants(data)
+    if (type == 'レストラン') setData(data)
   }
 
   useEffect(() => {
-    getFoods()
-    getRestaurants()
-  }, []);
+    let params = {
+      name: search,
+      low_price: type == 'レストラン' ? prices[0] * 10000 : prices[0] * 1000,
+      high_price: type == 'レストラン' ? prices[1] * 10000 : prices[1] * 1000,
+      jp_like: type == '日本人好む料理' ? true : false,
+      percent
+    }
+    getFoods(params, type)
+    getRestaurants(params, type)
+    if (search !== '') {
+      setIsSearch(true)
+    } else {
+      if (params.jp_like == true) setIsSearch(true)
+      else setIsSearch(false)
+    }
+  }, [prices, search, type, percent]);
+
+  const getDataPage = () => {
+    const startIndex = (page - 1) * 8;
+    const endIndex = startIndex + 8;
+    if (!data) return [];
+    return data.slice(startIndex, endIndex);
+  };
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    // if (event.target.value == '日本人好む料理') {
-    //   let newData:any = []
-    //   foods.forEach((f:any) => {
-    //     let count = 0
-    //     if (f.reviews.length > 0) {
-    //       f.reviews.forEach((rv:any) => {
-    //         if (rv.rating >= 4) count += 1
-    //       })
-    //       if (count / f.reviews.length >= 0.8) newData.push(f)
-    //     } 
-    //     setData(newData)
-    //     setIsSearch(true)
-    //   })
-    // } else {
-    //   if (search == '') setIsSearch(false)
-    // }
     setType(event.target.value as string);
   };
   const classes = useStyles();
@@ -97,25 +108,10 @@ export const Search = () => {
             value={search}
             startAdornment={<SearchIcon />}
             disableUnderline
-            onKeyDown={async (e) => {
-              if (e.key === 'Enter') {
-                setIsSearch(true);
-                if (type == '食べ物') {
-                  let results = foods.filter((f:any) => f.name.includes(search))
-                  setData(results)
-                } else {
-                  let results = restaurants.filter((f:any) => f.name.includes(search))
-                  setData(results)
-                }
-              }
-              if (search == '') {
-                setIsSearch(false);
-              }
-            }}
             onChange={(e) => {
               setSearch(e.target.value);
             }}
-          ></Input>
+          />
           <FormControl variant="outlined" className={classes.formControl}>
             <Select
               labelId="demo-simple-select-outlined-label"
@@ -140,14 +136,14 @@ export const Search = () => {
               >
                 レストラン
               </MenuItem>
-              {/* <MenuItem
+              <MenuItem
                 value={'日本人好む料理'}
                 style={{
                   color: 'black',
                 }}
               >
                 日本人好む料理
-              </MenuItem> */}
+              </MenuItem>
             </Select>
           </FormControl>
         </Box>
@@ -201,7 +197,7 @@ export const Search = () => {
                       cursor: 'pointer',
                     }}
                     onClick={() => {
-                      history.push(`detail-restaurant/${i + 1}`);
+                      history.push(`detail-restaurant/${a.id}`);
                     }}
                   >
                     <PreviewItem image={a.image} name={a.name} />
@@ -213,79 +209,148 @@ export const Search = () => {
         </Box>
       )}
       {isSearch && data && (
-        <Box
+        <Box 
           style={{
+            marginTop: 20,
             display: 'flex',
-            flexWrap: 'wrap',
-            marginTop: 40,
+            alignItems: 'center',
+            justifyItems: 'center',
+            flexDirection: 'column'
           }}
         >
-          <Slider
-            size="small"
-            defaultValue={[0, 100000]}
-            aria-label="Small"
-            valueLabelDisplay="auto"
-          />
-          {data.map((x: any, i: any) => {
-            return (
-              <Box
-                style={{
-                  width: 300,
-                  height: 300,
-                  borderRadius: 30,
-                  margin: 12,
-                  background: 'white',
-                  padding: 20,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-                key={i}
-                onClick={() => {
-                  if (type == '食べ物') history.push(`detail-food/${x.id + 1}`);
-                  else history.push(`detail-restaurant/${x.id + 1}`);
-                }}
-              >
-                <CardMedia
-                  image={x.image}
-                  style={{
-                    width: 180,
-                    height: 120,
-                    borderRadius: 20,
+          <Box 
+            style={{
+              width: 500,
+              marginTop: 25,
+              display: 'flex',
+              alignItems: 'center',
+              justifyItems: 'center',
+              flexDirection: 'column'
+            }}
+          >
+            <div style={{
+              display: 'flex',
+              columnGap: 50
+            }}>
+              <div>
+                {type != 'レストラン' &&
+                <InputLabel style={{color: 'black', fontSize: 20}}> 
+                  価格: {prices[0] * 1000} VND - {prices[1] * 1000} VND 
+                </InputLabel>
+                }
+                {type == 'レストラン' &&
+                <InputLabel style={{color: 'black', fontSize: 20}}> 
+                  価格: {prices[0] * 10000} VND - {prices[1] * 10000} VND 
+                </InputLabel>
+                }
+                <Slider
+                  value={prices}
+                  onChange={(e, value:any) => {
+                    if (value[0] <= value[1]) setPrices(value)
+                    else setPrices([value[1], value[0]])
                   }}
                 />
-                <Typography style={{
-                  fontWeight:600,
-                  margin: '10px 0px',
-                }}>{x.name}</Typography>
-                {
-                  type == '食べ物' && <Typography style={{
-                    fontWeight:600,
-                    margin: '10px 0px',
-                  }}>
-                    価格: {x.price} VND
-                  </Typography>
-                }
-                {
-                  type == 'レストラン' && <Typography style={{
-                    fontWeight:600,
-                    margin: '10px 0px',
-                  }}>
-                    価格: {x.low_price} VND - {x.high_price} VND
-                  </Typography>
-                }
-                <Box display='flex'>
-                  <Rating
-                    name="read-only"
-                    value={x.rating_average}
-                    precision={0.5}
-                    readOnly
+              </div>
+            {type == '日本人好む料理' &&
+              <div>
+                <InputLabel style={{color: 'black', fontSize: 20}}> 
+                  日本人好みのパーセント: {percent}%
+                </InputLabel>
+                <Slider
+                  value={percent}
+                  onChange={(e, value:any) => {
+                    setPercent(value)
+                  }}
+                />
+              </div>
+            } 
+            </div>
+          </Box>
+          <Box
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              marginTop: 40,
+            }}
+          >
+            {getDataPage().map((x: any, i: any) => {
+              return (
+                <Box
+                  style={{
+                    width: 300,
+                    height: 300,
+                    borderRadius: 30,
+                    margin: 12,
+                    background: 'white',
+                    padding: 20,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  key={i}
+                  onClick={() => {
+                    switch (type) {
+                      case '食べ物':
+                        history.push(`detail-food/${x.id}`)
+                        break
+                      case 'レストラン':
+                        history.push(`detail-restaurant/${x.id}`)
+                        break
+                      case '日本人好む料理':
+                        history.push(`detail-food/${x.id}`)
+                        break 
+                    }
+                  }}
+                >
+                  <CardMedia
+                    image={x.image}
+                    style={{
+                      width: 180,
+                      height: 120,
+                      borderRadius: 20,
+                    }}
                   />
+                  <Typography style={{
+                    fontWeight:600,
+                    margin: '10px 0px',
+                  }}>{x.name}</Typography>
+                  {
+                    (type == '食べ物' || type == '日本人好む料理') && <Typography style={{
+                      fontWeight:600,
+                      margin: '10px 0px',
+                    }}>
+                      価格: {x.price} VND
+                    </Typography>
+                  }
+                  {
+                    type == 'レストラン' && <Typography style={{
+                      fontWeight:600,
+                      margin: '10px 0px',
+                    }}>
+                      価格: {x.low_price} VND - {x.high_price} VND
+                    </Typography>
+                  }
+                  <Box display='flex'>
+                    <Rating
+                      name="read-only"
+                      value={x.rating_average}
+                      precision={1}
+                      readOnly
+                    />
+                  </Box>
                 </Box>
-              </Box>
-            );
-          })}
+              );
+            })}
+          </Box>
+          { data.length > 0 &&
+            <Pagination
+              count={Math.ceil(data ? data.length / 8 : 2)}
+              onChange={(e, page) => {
+                setPage(page);
+              }}
+            />
+          }
         </Box>
       )}
     </Box>

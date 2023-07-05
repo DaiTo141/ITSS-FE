@@ -13,7 +13,8 @@ import PasswordIcon from '@mui/icons-material/Password';
 import AXIOS from 'services/axios';
 import { useHistory } from 'react-router-dom';
 import { SecureStorageEnum } from 'enums/auth';
-export const Login = () => {
+
+export const ForgotPassword = () => {
   const classes = useStyles();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -139,9 +140,6 @@ export const Login = () => {
         <Box mt={2} className="center-root">
           <Typography
             style={{ textDecoration: 'underline', cursor: 'pointer' }}
-            onClick={() => {
-              history.push('/forgot_password');
-            }}
           >
             パースワード忘れ？
           </Typography>
@@ -167,4 +165,4 @@ const useStyles = makeStyles((theme) => ({
       fill: 'black',
     },
   },
-}));
+}));  

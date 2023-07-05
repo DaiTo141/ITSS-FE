@@ -8,4 +8,5 @@ export enum clientRoutesEnum {
   SEARCH = '/search',
   DETAIL_FOOD = '/detail-food/:foodId',
   DETAIL_RESTAURANT = '/detail-restaurant/:restaurantId',
+  DETAIL_USER = '/profile'
 }

@@ -1,20 +1,33 @@
 import { Box, CardMedia, Typography, makeStyles } from '@material-ui/core';
-import { Rating } from '@mui/material';
+import { Rating, Pagination } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import AXIOS from 'services/axios';
+
 export const DetailRestaurant = () => {
+  const [page, setPage] = useState(1)
   const { restaurantId } = useParams<{ restaurantId: string }>();
+  const history = useHistory()
   const classes = useStyles();
   const [data, setData] = useState<any>();
+  const getDetail = async (restaurantId: any) => {
+    const detail = (await AXIOS.get(`restaurants/${restaurantId}`)) as any;
+    setData(detail);
+  };
+
+  const getDataFoodPage = () => {
+    const startIndex = (page - 1) * 4;
+    const endIndex = startIndex + 4;
+    if (!data.foods) return [];
+    return data.foods.slice(startIndex, endIndex);
+  };
+
   useEffect(() => {
-    const getDetail = async () => {
-      const detail = (await AXIOS.get(`restaurants/${restaurantId}`)) as any;
-      setData(detail);
-    };
-    getDetail();
+    getDetail(restaurantId);
   }, [restaurantId]);
+
   if (!data) return <></>;
+  
   return (
     <Box className={classes.container}>
       <Box display="flex" justifyContent="center" alignItems="center">
@@ -41,7 +54,7 @@ export const DetailRestaurant = () => {
           <Rating
             name="read-only"
             value={data.rating_average}
-            precision={0.5}
+            precision={1}
             readOnly
           />
         </Box>
@@ -58,6 +71,69 @@ export const DetailRestaurant = () => {
           <Typography>{data.close_time}</Typography>
         </Box>
       </Box>
+      {data.foods.length > 0 && 
+        <Box
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            marginTop: 40,
+          }}
+        > 
+        {getDataFoodPage().map((x: any, i: any) => 
+            <Box
+              style={{
+                width: 300,
+                height: 300,
+                borderRadius: 30,
+                margin: 12,
+                background: 'white',
+                padding: 20,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              key={i}
+              onClick={() => {
+                history.push(`detail-food/${x.id}`);
+              }}
+            >
+              <CardMedia
+                image={x.image}
+                style={{
+                  width: 180,
+                  height: 120,
+                  borderRadius: 20,
+                }}
+              />
+              <Typography style={{
+                fontWeight:600,
+                margin: '10px 0px',
+              }}>{x.name}</Typography>
+              <Typography style={{
+                  fontWeight:600,
+                  margin: '10px 0px',
+                }}>
+                  価格: {x.price} VND
+              </Typography>
+              <Box display='flex'>
+                <Rating
+                  name="read-only"
+                  value={x.rating_average}
+                  precision={1}
+                  readOnly
+                />
+              </Box>
+            </Box>
+        )}
+      </Box>
+    }
+    <Pagination
+      count={Math.ceil(data.foods ? data.foods.length / 4 : 2)}
+      onChange={(e, page) => {
+        setPage(page);
+      }}
+    />
     </Box>
   );
 };

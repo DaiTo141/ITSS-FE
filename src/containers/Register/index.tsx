@@ -6,22 +6,32 @@ import {
   TextField,
   Typography,
   makeStyles,
+  Select,
+  InputLabel,
+  FormControl,
+  MenuItem
 } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import PasswordIcon from '@mui/icons-material/Password';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import EnhancedEncryptionIcon from '@mui/icons-material/EnhancedEncryption';
+import FlagIcon from '@mui/icons-material/FlagOutlined'
 import { useHistory } from 'react-router-dom';
 import AXIOS from 'services/axios';
+import { SecureStorageEnum } from 'enums/auth';
 export const Register = () => {
   const classes = useStyles();
+  const [nation, setNation] = useState<any>('jp')
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [confirm, setConfirm] = useState('');
   const [err, setErr] = useState(false);
   const history = useHistory();
+  const handleChangeNation = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setNation(event.target.value as string)
+  }
   return (
     <Box
       display="flex"
@@ -113,6 +123,38 @@ export const Register = () => {
               ),
             }}
           />
+          <FormControl variant='outlined'>
+            <InputLabel id='select-label'>国籍</InputLabel>
+            <Select 
+              value={nation}
+              onChange={handleChangeNation}
+              style={{
+                color: 'black',
+              }} 
+              startAdornment = {
+                <InputAdornment position="start">
+                  <FlagIcon />
+                </InputAdornment>
+              }
+            >
+              <MenuItem
+                value={'jp'}
+                style={{
+                  color: 'black',
+                }}  
+              >
+                日本人
+              </MenuItem>
+              <MenuItem
+                value={'vi'}
+                style={{
+                  color: 'black',
+                }}  
+              >
+                ベトナム人
+              </MenuItem>
+            </Select>
+          </FormControl>
         </Box>
         {err && (
           <Box mt={2} className="center-root">
@@ -141,8 +183,24 @@ export const Register = () => {
                 image:
                   'https://s3.ap-southeast-2.amazonaws.com/cdn.greekherald.com.au/wp-content/uploads/2020/07/05194617/default-avatar.png',
                 status: 0,
+                nation: nation
               });
-              localStorage.setItem('me', JSON.stringify(data));
+              AXIOS.post('auths/login', {
+                email:email,
+                password: password
+              }).then((res:any) => {
+                localStorage.setItem(SecureStorageEnum.ACCESS_TOKEN, res.data.access_token)
+                AXIOS.get('auths/profile').then((res:any) => {
+                  return res.id
+                }).then((id) => {
+                  AXIOS.get(`users/${id}`).then((res:any) => {
+                    localStorage.setItem('me', JSON.stringify(res));
+                    setTimeout(() => {
+                      history.push('/');
+                    }, 500);
+                  })
+                })
+              })
               setTimeout(() => {
                 history.push('/');
               }, 500);
@@ -179,6 +237,9 @@ const useStyles = makeStyles((theme) => ({
       background: 'white',
     },
     '& input': {
+      color: 'black',
+    },
+    '& select': {
       color: 'black',
     },
     '& svg': {
