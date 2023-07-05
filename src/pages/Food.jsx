@@ -71,18 +71,17 @@ export default function Food() {
         </div>
       </div>
       <div className="mt-20">
-        <div className="w-full h-16 rounded-2xl text-xl border shadow-md border-black bg-white justify-items-center grid grid-cols-5 gap-2">
+        <div className="w-full h-16 rounded-2xl text-xl border shadow-md border-black bg-white justify-items-center grid grid-cols-6 gap-2">
           <div className="flex justify-center items-center font-thin">ID</div>
           <div className="flex justify-center items-center">名前</div>
-          <div className="flex justify-center items-center">
-            ディスクリプション
-          </div>
+          <div className="flex justify-center items-center">ディスクリプション</div>
           <div className="flex justify-center items-center">価格</div>
+          <div className="flex justify-center items-center">レーティング</div>
           <div className="flex justify-center items-center"></div>
         </div>
       </div>
       <div className="mt-16">
-        <div className="w-full grid grid-cols-1 rounded-2xl text-xl border shadow-md border-black  bg-white ">
+        <div className="w-full grid grid-cols-1 rounded-2xl text-xl border shadow-md border-black bg-white">
           {getDataPage().map((item) => {
             return (
               <div key={item.id}>

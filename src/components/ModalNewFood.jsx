@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Api from "../services/axios";
-import { Modal } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 export default function ModalNewFood({ closeModalNewFood }) {
