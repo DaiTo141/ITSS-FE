@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Api from "../services/axios";
+import { Modal } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 export default function ModalNewFood({ closeModalNewFood }) {
+  const navigate = useNavigate()
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [price, setPrice] = useState('')
@@ -13,12 +16,12 @@ export default function ModalNewFood({ closeModalNewFood }) {
         name,
         description,
         image,
-        restaurant_id:2,
+        restaurant_id,
         price: +price,
         rating_average: 0
       }
     ).then((res) => {
-      console.log(res)
+      return navigate(0, {replace:true})
     })
   };
   useEffect(() => {
@@ -105,7 +108,7 @@ export default function ModalNewFood({ closeModalNewFood }) {
                 <select
                   required
                   className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
-                  onChange={(e) => setRestaurantId(e.target.value)}
+                  onSelect={(e) => setRestaurantId(e.target.value)}
                 >
                   {restaurantList.map((value) => {
                     return (

@@ -1,6 +1,23 @@
-import React from "react";
+import React, {useState} from "react";
+import Api from "../services/axios";
+import { useNavigate } from "react-router-dom";
 
-export default function ModalSettingUser({ closeModalSettingUser }) {
+export default function ModalSettingUser({item, closeModalSettingUser }) {
+  const navigate = useNavigate()
+  const [name, setName] = useState(item.name)
+  const [email, setEmail] = useState(item.email)
+  const [image, setImage] = useState(item.image)
+  const [nation, setNation] = useState(item.nation)
+  const updateUser = () => {
+    Api.patch(`/users/${item.id}`, {
+      name,
+      email,
+      nation,
+      image
+    }).then(() => {
+      return navigate(0, {replace: true})
+    })
+  };
   return (
     <div className="modal">
       <div className="overlay" onClick={() => closeModalSettingUser()}></div>
@@ -11,7 +28,7 @@ export default function ModalSettingUser({ closeModalSettingUser }) {
           </div>
         </div>
         <div className="w-full px-10">
-          <form className="w-full">
+          <form className="w-full" onSubmit={updateUser}>
             <div className="mb-8">
               <div className="h-8 mb-4 w-[30%] shadow-md  flex justify-center items-center  border border-red-500 rounded-full bg-white">
                 名前
@@ -20,7 +37,8 @@ export default function ModalSettingUser({ closeModalSettingUser }) {
                 <input
                   type="text"
                   className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
-                  placeholder="................"
+                  placeholder={name}
+                  onChange={e => {setName(e.target.value)}}
                 />
               </div>
             </div>
@@ -32,32 +50,37 @@ export default function ModalSettingUser({ closeModalSettingUser }) {
                 <input
                   type="text"
                   className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
-                  placeholder="................"
+                  placeholder={email}
+                  onChange={e => {setEmail(e.target.value)}}
                 />
               </div>
             </div>
             <div className="mb-8">
               <div className="h-8 mb-4 w-[30%] shadow-md  flex justify-center items-center  border border-red-500 rounded-full bg-white">
-                電話番号
+                イメージ
               </div>
               <div className="w-full">
                 <input
                   type="text"
                   className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
-                  placeholder="................"
+                  placeholder={image}
+                  onChange={e => {setImage(e.target.value)}}
                 />
               </div>
             </div>
             <div className="mb-8">
               <div className="h-8 mb-4 w-[30%] shadow-md  flex justify-center items-center  border border-red-500 rounded-full bg-white">
-                ロール
+                国籍
               </div>
               <div className="w-full">
-                <input
-                  type="text"
-                  className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
-                  placeholder="................"
-                />
+                <select
+                  className=" border shadow-md w-full border-red-500 p-3 rounded-full "
+                  value={nation}
+                  onSelect={e => setNation(e.target.value)}
+                >
+                  <option key={'jp'} value={'jp'}>日本人</option>
+                  <option key={'vi'} value={'vi'}>ベトナム人</option>
+                </select>
               </div>
             </div>
             <div className="w-full flex justify-end">

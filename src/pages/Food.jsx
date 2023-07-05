@@ -8,6 +8,7 @@ import Api from "../services/axios";
 import { Pagination } from '@mui/material';
 
 export default function Food() {
+  const [pageSize, setPageSize] = useState(8)
   const [name, setName] = useState('')
   const [modalNewFood, setModalNewFood] = useState(false);
   const [page, setPage] = useState(1);
@@ -22,8 +23,8 @@ export default function Food() {
   };
 
   const getDataPage = () => {
-    const startIndex = (page - 1) * 8;
-    const endIndex = startIndex + 8;
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
     if (!foods) return [];
     return foods.slice(startIndex, endIndex);
   };
@@ -82,25 +83,19 @@ export default function Food() {
       </div>
       <div className="mt-16">
         <div className="w-full grid grid-cols-1 rounded-2xl text-xl border shadow-md border-black  bg-white ">
-          {foods.length > 0? (
-              getDataPage().map((item) => {
-                return (
-                  <div key={item.id}>
-                    <RowFoods item={item} />
-                  </div>
-                );
-              })
-              ):(
-              (
-                <div></div>
-              ))
-          }
+          {getDataPage().map((item) => {
+            return (
+              <div key={item.id}>
+                <RowFoods item={item} />
+              </div>
+            );
+          })}
         </div>
       </div>
       <div className="mt-10 flex justify-center items-center">
         <div className="h-10 border shadow-md border-black w-auto text-center  rounded-full  bg-white">
           <Pagination
-            count={Math.ceil(foods ? foods.length / 8 : 2)}
+            count={Math.ceil(foods ? foods.length / pageSize : 2)}
             onChange={(e, page) => {
               setPage(page);
             }}

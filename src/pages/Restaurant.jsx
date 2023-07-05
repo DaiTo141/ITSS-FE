@@ -8,23 +8,25 @@ import Api from "../services/axios";
 import { Pagination } from '@mui/material';
 
 export default function Restaurant() {
+  const [pageSize, setPageSize] = useState(8)
   const [name, setName] = useState('')
   const [modalNewRes, setModalNewRes] = useState(false);
   const [page, setPage] = useState(1);
   const [restaurants, setRes] = useState([]);
 
-
   const openModalNewRes = () => {
     return setModalNewRes(true);
   };
-  const getDataPage = () => {
-    const startIndex = (page - 1) * 4;
-    const endIndex = startIndex + 4;
-    if (!restaurants) return [];
-    return restaurants.slice(startIndex, endIndex);
-  };
+
   const closeModalNewRes = () => {
     return setModalNewRes(false);
+  };
+
+  const getDataPage = () => {
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    if (!restaurants) return [];
+    return restaurants.slice(startIndex, endIndex);
   };
 
   useEffect(() => {
@@ -54,7 +56,9 @@ export default function Restaurant() {
               onChange={(e) => setName(e.target.value)}
             />
           </div>
-          <div className="h-14 w-16 shadow-md ml-5 flex justify-center items-center border border-black rounded-xl bg-white">
+          <div 
+            className="h-14 w-16 shadow-md ml-5 flex justify-center items-center border border-black rounded-xl bg-white"
+          >
             <MdOutlineKeyboardArrowDown className="text-4xl" />
           </div>
         </form>
@@ -80,32 +84,25 @@ export default function Restaurant() {
       </div>
       <div className="mt-16">
         <div className="w-full grid grid-cols-1 rounded-2xl text-xl border shadow-md border-black  bg-white ">
-        {restaurants.length > 0? (
-              getDataPage().map((item) => {
-                return (
-                  <div key={item.id}>
-                    <RowRestaurant item={item} />
-                  </div>
-                );
-              })
-              ):(
-              (
-                <div></div>
-              ))
-          }
+          {getDataPage().map((item) => {
+              return (
+                <div key={item.id}>
+                  <RowRestaurant item={item} />
+                </div>
+              )
+          })}
         </div>
       </div>
       <div className="mt-10 flex justify-center items-center">
-        <div className="h-10 border shadow-md border-black w-auto text-center  rounded-full  bg-white">
+        <div className="h-10 border shadow-md border-black w-auto text-center rounded-full bg-white">
           <Pagination
-            count={Math.ceil(restaurants ? restaurants.length / 8 : 2)}
+            count={Math.ceil(restaurants ? restaurants.length / pageSize : 2)}
             onChange={(e, page) => {
               setPage(page);
             }}
           />
         </div>
       </div>
-
       {modalNewRes && <ModalNewRes closeModalNewRes={closeModalNewRes} />}
     </div>
   );

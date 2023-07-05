@@ -1,30 +1,32 @@
 import React, { useState } from "react";
 import Api from "../services/axios";
+import { useNavigate } from "react-router-dom";
 
 export default function ModalSettingRes({ item, closeModalSettingRes }) {
-  const [name, setName] = useState('')
-  const [address, setAddress] = useState('')
-  const [low_price, setLowPrice] = useState('')
-  const [high_price, setHighPrice] = useState('')
-  const [image, setImage] = useState('')
-  const update = async ( event) => {
-    const body = {
-      "name": name?name:item.name,
-      "image": image?image:item.image,
-      "address":address?address:item.address,
-      "website": item.website,
-      "phone_number": item.phone_number,
-      "low_price": low_price?+low_price:item.low_price,
-      "high_price": high_price?+high_price:item.high_price,
-      "open_time": item.open_time,
-      "close_time": item.close_time,
-      "rating_average": item.rating_average
+  const navigate = useNavigate()
+  const [name, setName] = useState(item.name)
+  const [address, setAddress] = useState(item.address)
+  const [low_price, setLowPrice] = useState(item.low_price)
+  const [high_price, setHighPrice] = useState(item.high_price)
+  const [web, setWeb] = useState(item.website)
+  const [open_time, setOpenTime] = useState(item.open_time)
+  const [close_time, setCloseTime] = useState(item.close_time)
+  const [image, setImage] = useState(item.image)
+  const [phone, setPhone] = useState(item.phone_number)
+  const updateRes = () => {
+    Api.patch('/restaurants/' + item.id,{
+      name,
+      image,
+      address,
+      website:web,
+      low_price: +low_price,
+      high_price: +high_price,
+      open_time,
+      close_time,
     }
-    Api.patch('/restaurants/' + item.id,body
-    ).then((res) => {
-      console.log(res)
+    ).then(() => {
+      return navigate(0, {replace: true})
     })
-
   };
   return (
     <div className="modal">
@@ -39,12 +41,25 @@ export default function ModalSettingRes({ item, closeModalSettingRes }) {
           <div className="w-full flex ">
             <div className="object-cover">
               <img
-                src="https://vcdn-dulich.vnecdn.net/2020/01/17/26158077-167284690667495-84349-7736-6542-1579256216.jpg"
+                src={image}
                 alt=""
                 className="h-40 w-72  mb-5 rounded-[32px]"
               />
             </div>
-            <form className="w-full ml-16" onSubmit={update}>
+            <form className="w-full ml-16" onSubmit={updateRes} style={{height: 800, overflowY:"scroll" }}>
+              <div className="mb-8">
+                <div className="h-8 mb-4 w-[30%] shadow-md  flex justify-center items-center  border border-red-500 rounded-full bg-white">
+                  イメージ
+                </div>
+                <div className="w-full">
+                  <input
+                    type="text"
+                    className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
+                    placeholder={image}
+                    onChange={(e) => setImage(e.target.value)}
+                  />
+                </div>
+              </div>
               <div className="mb-8">
                 <div className="h-8 mb-4 w-[30%] shadow-md  flex justify-center items-center  border border-red-500 rounded-full bg-white">
                   名前
@@ -53,7 +68,7 @@ export default function ModalSettingRes({ item, closeModalSettingRes }) {
                   <input
                     type="text"
                     className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
-                    placeholder="................"
+                    placeholder={name}
                     onChange={(e) => setName(e.target.value)}
                   />
                 </div>
@@ -66,47 +81,90 @@ export default function ModalSettingRes({ item, closeModalSettingRes }) {
                   <input
                     type="text"
                     className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
-                    placeholder="................"
+                    placeholder={address}
                     onChange={(e) => setAddress(e.target.value)}
                   />
                 </div>
               </div>
               <div className="mb-8">
                 <div className="h-8 mb-4 w-[30%] shadow-md  flex justify-center items-center  border border-red-500 rounded-full bg-white">
-                  low_price
+                  ウェブサイト
+                </div>
+                <div className="w-full">
+                  <input
+                    required
+                    type="text"
+                    className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
+                    placeholder={web ? web : '.............'}
+                    onChange={(e) => setWeb(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="mb-8">
+                <div className="h-8 mb-4 w-[30%] shadow-md  flex justify-center items-center  border border-red-500 rounded-full bg-white">
+                  電話番号
+                </div>
+                <div className="w-full">
+                  <input
+                    required
+                    type="text"
+                    className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
+                    placeholder={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="mb-8">
+                <div className="h-8 mb-4 w-[30%] shadow-md  flex justify-center items-center  border border-red-500 rounded-full bg-white">
+                  価格から
                 </div>
                 <div className="w-full">
                   <input
                     type="text"
                     className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
-                    placeholder="................"
+                    placeholder={low_price}
                     onChange={(e) => setLowPrice(e.target.value)}
                   />
                 </div>
               </div>
               <div className="mb-8">
                 <div className="h-8 mb-4 w-[30%] shadow-md  flex justify-center items-center  border border-red-500 rounded-full bg-white">
-                  high_price
+                  価格まで
                 </div>
                 <div className="w-full">
                   <input
                     type="text"
                     className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
-                    placeholder="................"
+                    placeholder={high_price}
                     onChange={(e) => setHighPrice(e.target.value)}
                   />
                 </div>
               </div>
               <div className="mb-8">
                 <div className="h-8 mb-4 w-[30%] shadow-md  flex justify-center items-center  border border-red-500 rounded-full bg-white">
-                  image
+                  開店時間
                 </div>
                 <div className="w-full">
                   <input
-                    type="text"
+                    required
+                    type="number"
                     className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
-                    placeholder="................"
-                    onChange={(e) => setImage(e.target.value)}
+                    placeholder={open_time}
+                    onChange={(e) => setOpenTime(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="mb-8">
+                <div className="h-8 mb-4 w-[30%] shadow-md  flex justify-center items-center  border border-red-500 rounded-full bg-white">
+                  閉店時間
+                </div>
+                <div className="w-full">
+                  <input
+                    required
+                    type="number"
+                    className=" border shadow-md w-full border-red-500 p-3  text-gray-900  rounded-full "
+                    placeholder={close_time}
+                    onChange={(e) => setCloseTime(e.target.value)}
                   />
                 </div>
               </div>

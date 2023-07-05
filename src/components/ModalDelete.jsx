@@ -1,11 +1,15 @@
 import React from "react";
-import axios from "axios"
+import Api from "../services/axios";
+import { useNavigate } from "react-router-dom";
 
 export default function ModalDelete({ url, closeModalDelete }) {
-  const deleteFood = async()=>{
-    const res = await axios.delete( url);
-    // alert( res.status);
-    closeModalDelete();
+  const navigate = useNavigate()
+  const deleteFood = () => {
+    Api.delete(url)
+      .then((res) => {
+        closeModalDelete();
+        return navigate(0, {replace: true})
+      })
   };
   return (
     <div className="modal">

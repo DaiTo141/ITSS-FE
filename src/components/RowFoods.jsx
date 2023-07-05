@@ -47,7 +47,7 @@ export default function RowFoods({ item }) {
           className="mx-2 hover:text-blue-500 cursor-pointer"
         />
       </div>
-      {modalDelete && <ModalDelete url={process.env.REACT_APP_BE_URL + '/foods/'+item.id} closeModalDelete={closeModalDelete} />}
+      {modalDelete && <ModalDelete url={'/foods/'+item.id} closeModalDelete={closeModalDelete} />}
       {modalSettingFood && (
         <div className="text-base">
           <ModalSettingFood item={item} closeModalSettingFood={closeModalSettingFood} />

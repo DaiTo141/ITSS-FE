@@ -53,7 +53,7 @@ export default function RowRestaurant({ item }) {
         />
       </div>
 
-      {modalDelete && <ModalDelete url={process.env.REACT_APP_BE_URL + '/restaurants/'+item.id}  closeModalDelete={closeModalDelete} />}
+      {modalDelete && <ModalDelete url={'/restaurants/'+item.id}  closeModalDelete={closeModalDelete} />}
       {modalSettingRes && (
         <div className="text-base">
           <ModalSettingRes item={item} closeModalSettingRes={closeModalSettingRes} />

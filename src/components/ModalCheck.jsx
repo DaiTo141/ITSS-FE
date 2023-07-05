@@ -1,6 +1,9 @@
 import React from "react";
+import Api from "../services/axios";
+import { useNavigate } from "react-router-dom";
 
-export default function ModalCheck({ closeModalCheck }) {
+export default function ModalCheck({ item, closeModalCheck }) {
+  const navigate = useNavigate()
   return (
     <div className="modal">
       <div className="overlay" onClick={() => closeModalCheck()}></div>
@@ -14,6 +17,13 @@ export default function ModalCheck({ closeModalCheck }) {
               <button
                 type="button"
                 className="text-black bg-white hover:bg-gray-300 border border-black rounded-full font-medium shadow-md text-xl flex items-center px-8 py-1 "
+                onClick={(e) => {
+                  Api.patch(`/users/${item.id}`, {
+                    status: item.status === 0 ? 1 : 0 
+                  }).then(() => {
+                    return navigate(0, {replace: true})
+                  })
+                }}
               >
                 はい
               </button>

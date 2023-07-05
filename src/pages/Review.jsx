@@ -6,12 +6,13 @@ import Api from "../services/axios";
 import { Pagination } from "@mui/material";
 
 export default function Review() {
+  const [pageSize, setPageSize] = useState(8)
   const [reviews, setReviews] = useState([])
   const [name, setName] = useState('')
   const [page, setPage] = useState(1)
   const getDataPage = () => {
-    const startIndex = (page - 1) * 8;
-    const endIndex = startIndex + 8;
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
     if (!reviews) return [];
     return reviews.slice(startIndex, endIndex);
   };
@@ -78,7 +79,7 @@ export default function Review() {
       <div className="mt-10 flex justify-center items-center">
         <div className="h-10 border shadow-md border-black w-auto text-center  rounded-full  bg-white">
           <Pagination
-            count={Math.ceil(reviews ? reviews.length / 8 : 2)}
+            count={Math.ceil(reviews ? reviews.length / pageSize : 2)}
             onChange={(e, page) => {
               setPage(page);
             }}

@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-// import Pagination from "../components/Pagination";
+import React, { useEffect, useRef, useState } from "react";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { BiSearchAlt } from "react-icons/bi";
 import RowUsers from "../components/RowUsers";
@@ -7,12 +6,14 @@ import Api from "../services/axios";
 import { Pagination } from "@mui/material";
 
 export default function User() {
+  const [pageSize, setPageSize] = useState(8)
   const [users, setUsers] = useState([])
   const [name, setName] = useState('')
   const [page, setPage] = useState(1)
+
   const getDataPage = () => {
-    const startIndex = (page - 1) * 8;
-    const endIndex = startIndex + 8;
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
     if (!users) return [];
     return users.slice(startIndex, endIndex);
   };
@@ -27,9 +28,10 @@ export default function User() {
       setUsers(res.data)
     })
   }, [name])
+
   return (
     <div className="pt-20 mx-20">
-      <div className="flex justify-between ">
+      <div className="flex justify-between">
         <form className="flex items-center">
           <div className="relative ">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -75,9 +77,9 @@ export default function User() {
         </div>
       </div>
       <div className="mt-10 flex justify-center items-center">
-        <div className="h-10 border shadow-md border-black w-auto text-center  rounded-full  bg-white">
+        <div className="h-10 border shadow-md border-black w-auto text-center rounded-full bg-white">
           <Pagination 
-            count={Math.ceil(users ? users.length / 8 : 2)}
+            count={Math.ceil(users ? users.length / pageSize : 2)}
             onChange={(e, page) => {
               setPage(page);
             }}

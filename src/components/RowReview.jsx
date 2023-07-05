@@ -34,7 +34,9 @@ export default function RowReview({ item }) {
         {new Date(item.review_date).toDateString()}
       </div>
       <div className="flex justify-center text-3xl text-gray-500 items-center">
-        <FiSettings className="mx-2 hover:text-blue-500 cursor-pointer" />
+        <FiSettings 
+          className="mx-2 hover:text-blue-500 cursor-pointer" 
+        />
         <AiOutlineMinusCircle
           onClick={() => openModalDelete()}
           className="mx-2 hover:text-blue-500 cursor-pointer"
