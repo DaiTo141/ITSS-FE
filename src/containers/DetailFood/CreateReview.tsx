@@ -8,35 +8,39 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import { Rating } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AXIOS from 'services/axios';
+
 export const CreateReview = ({
   open,
   handleClose,
   handleOpen,
   foodId,
-  isAdd,
-  data,
+  review,
+  setReview
 }: {
   open: boolean;
   handleClose: () => void;
   handleOpen: () => void;
   foodId?: string;
-  isAdd?: boolean;
-  data?:any;
+  review?: any;
+  setReview: (newReview:any) => void;
 }) => {
   const classes = useStyles();
   const [rate, setRate] = useState(5);
   const [textField, setTextField] = useState('');
-  const me = JSON.parse(localStorage.getItem('me') || '');
-  const getFoods = async () => {
-    const data = await AXIOS.get('foods');
-    localStorage.setItem('foods', JSON.stringify(data));
-  };
+  const me = JSON.parse(localStorage.getItem('me') || '{}');
+  useEffect(() => {
+    setRate(review ? review.rating : 5)
+    setTextField(review ? review.review_text : '');
+  }, [review])
   return (
     <Modal
       open={open}
-      onClose={handleClose}
+      onClose={() => {
+        setReview(null)
+        handleClose()
+      }}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
@@ -69,7 +73,10 @@ export const CreateReview = ({
                 padding: '0px 10px',
                 cursor: 'pointer',
               }}
-              onClick={handleClose}
+              onClick={() => {
+                setReview(null)
+                handleClose()
+              }}
             >
               <Typography
                 style={{
@@ -92,8 +99,10 @@ export const CreateReview = ({
           </Typography>
           <Rating
             value={rate}
-            onChange={(e, v) => setRate(v || 0)}
-            precision={0.5}
+            onChange={(e, v) => {
+              setRate(v || 0)
+            }}
+            precision={1}
           />
         </Box>
         <Box mt={2}>
@@ -117,14 +126,14 @@ export const CreateReview = ({
           />
         </Box>
         <Box mt={2} className="center-root">
-          <Button
+          {review == null && <Button
             style={{
               padding: '0px 12px',
               border: '1px solid red',
               borderRadius: 20,
             }}
             onClick={async () => {
-              if (isAdd && foodId) {
+              if (foodId) {
                 const data = await AXIOS.post('reviews', {
                   user_id: +me.id,
                   food_id: +foodId,
@@ -133,15 +142,36 @@ export const CreateReview = ({
                   review_text: textField,
                   review_date: new Date().toISOString(),
                 });
-                await getFoods();
-                setTimeout(() => {
-                  handleClose();
-                }, 500);
+                setReview(null)
+                handleClose();
               }
             }}
           >
             <Typography>追加</Typography>
-          </Button>
+          </Button>}
+          {review != null && <Button
+            style={{
+              padding: '0px 12px',
+              border: '1px solid red',
+              borderRadius: 20,
+            }}
+            onClick={async () => {
+              if (foodId) {
+                const data = await AXIOS.patch(`reviews/${review.id}`, {
+                  user_id: +me.id,
+                  food_id: +foodId,
+                  rating: rate,
+                  image: 'string',
+                  review_text: textField,
+                  review_date: new Date().toISOString(),
+                }); 
+                setReview(null)
+                handleClose();
+              }
+            }}
+          >
+            <Typography>編集</Typography>
+          </Button>}
         </Box>
       </Box>
     </Modal>
@@ -165,9 +195,8 @@ const useStyles = makeStyles((theme) => ({
       color: 'black',
     },
     '& .MuiFormControl-fullWidth': {
-      border: '1px solid black',
+      border: '4px solid black',
       borderRadius: 10,
-      background: 'aquamarine',
     },
   },
   header: {

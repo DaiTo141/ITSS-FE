@@ -6,18 +6,20 @@ import {
   Typography,
   makeStyles,
 } from '@material-ui/core';
-import { Pagination, Rating } from '@mui/material';
+import { Pagination, Rating, Button } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import AXIOS from 'services/axios';
 import { CreateReview } from './CreateReview';
+
 export const DetailFood = () => {
   const { foodId } = useParams<{ foodId: string }>();
   const classes = useStyles();
   const [page, setPage] = useState(1);
-  const [data, setData] = useState({} as any);
+  const [data, setData] = useState<any>({});
   const history = useHistory();
   const [open, setOpen] = React.useState(false);
+  const [review, setReview] = React.useState<any>(null);
   const handleOpen = () => {
     if (!localStorage.getItem('me')) {
       history.push('/login');
@@ -32,17 +34,21 @@ export const DetailFood = () => {
     if (!data.reviews) return [];
     return data.reviews.slice(startIndex, endIndex);
   };
+
+  const getFood = (foodId:any) => {
+    AXIOS.get(`foods/${foodId}`).then((food:any) => {
+      const reviews = food.reviews.reverse();
+      food.reviews = reviews;
+      setData(food);
+    })
+  }
+
   useEffect(() => {
-    const foods = localStorage.getItem('foods');
-    const data = foods
-      ? JSON.parse(foods).filter((d: any) => d.id == foodId)[0]
-      : ({} as any);
-    const reviews = data.reviews.reverse();
-    data.reviews = reviews;
-    setData(data);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [localStorage.getItem('foods'), foodId]);
+    getFood(foodId)
+  }, [foodId, open]);
+
   if (JSON.stringify(data) == '{}') return <Box></Box>;
+  
   return (
     <Box className={classes.container}>
       <Box display="flex" justifyContent="center" alignItems="center">
@@ -62,14 +68,18 @@ export const DetailFood = () => {
         </Box>
         <Box className={classes.item}>
           <Typography>レストラン: </Typography>
-          <Typography>{data.restaurant_name}</Typography>
+          <Typography><Button onClick={() => history.push(`/detail-restaurant/${data.restaurant_id}`)}>{data.restaurant_name}</Button></Typography>
+        </Box>
+        <Box className={classes.item}>
+          <Typography>価格: </Typography>
+          <Typography>{data.price} VND</Typography>
         </Box>
         <Box className={classes.item}>
           <Typography>評価: </Typography>
           <Rating
             name="read-only"
             value={data.rating_average}
-            precision={0.5}
+            precision={1}
             readOnly
           />
         </Box>
@@ -78,6 +88,7 @@ export const DetailFood = () => {
           <Typography>{data.description}</Typography>
         </Box>
       </Box>
+      {localStorage.getItem('me') &&
       <Box
         display="flex"
         justifyContent="flex-end"
@@ -86,7 +97,7 @@ export const DetailFood = () => {
         onClick={handleOpen}
       >
         <CardMedia
-          image="/images/Chat_plus.png"
+          image="/images/chat_plus.png"
           style={{
             width: 52,
             height: 52,
@@ -96,9 +107,9 @@ export const DetailFood = () => {
             cursor: 'pointer',
           }}
         />
-      </Box>
+      </Box>}
       <Box mt={5} width={'100%'}>
-        {getDataReviewPage().map((r: any, i: any) => {
+        {data.reviews.length > 0 && getDataReviewPage().map((r: any, i: any) => {
           return (
             <Box
               display="flex"
@@ -149,9 +160,23 @@ export const DetailFood = () => {
                     <Rating
                       name="read-only"
                       value={r.rating}
-                      precision={0.5}
+                      precision={1}
                       readOnly
+                      style={{
+                        marginRight: 20
+                      }}
                     />
+                    {r.user.nation == 'jp' &&
+                    <svg xmlns="http://www.w3.org/2000/svg" style={{background:"#eee", width: 40, height:28}}>
+                      <circle cx="50%" cy="50%" r="24%" fill="#bc002d"/>
+                    </svg>
+                    }
+                    {r.user.nation == 'vi' &&
+                    <svg width="40" height="28" viewBox="0 0 30 20" xmlns="http://www.w3.org/2000/svg" version="1.1">
+                      <rect width="30" height="20" fill="#da251d"/>
+                      <polygon points="15,4 11.47,14.85 20.71,8.15 9.29,8.15 18.53,14.85" fill="#ff0"/>
+                    </svg>                    
+                    }
                   </Box>
                   <Box
                     style={{
@@ -167,11 +192,10 @@ export const DetailFood = () => {
                 </Box>
               </Box>
               <Box width={120} display="flex" justifyContent="space-between">
-                {localStorage.getItem('me') &&
-                  r.user.id ==
-                    JSON.parse(localStorage.getItem('me') || '').id && (
+                {localStorage.getItem('me') && r.user.id == JSON.parse(localStorage.getItem('me') || '').id && (
                     <Box onClick={()=>{
                       setOpen(true);
+                      setReview(r)
                     }}>
                       <CardMedia
                         image="/images/chat.png"
@@ -184,34 +208,21 @@ export const DetailFood = () => {
                       />
                     </Box>
                   )}
-                {localStorage.getItem('me') &&
-                  r.user.id ==
-                    JSON.parse(localStorage.getItem('me') || '').id && (
+                {localStorage.getItem('me') && r.user.id == JSON.parse(localStorage.getItem('me') || '{}').id && (
                     <Box
                       style={{
                         borderRadius: 25,
                         cursor: 'pointer',
                       }}
                       onClick={async () => {
-                        const foods = localStorage.getItem('foods');
-                        const currentData = foods
-                          ? JSON.parse(foods).filter(
-                              (d: any) => d.id == foodId,
-                            )[0].reviews
-                          : ([] as any);
-                        let result = currentData.filter(
+                        let result = data.reviews.filter(
                           (x: any) => x.id != r.id,
                         );
-                        let permisstion =
-                          confirm('本人のユーザーがコメントを除きたいか');
+                        let permisstion = confirm('本人のユーザーがコメントを除きたいか');
                         if (permisstion) {
                           setData({ ...data, reviews: result.reverse() });
                           await AXIOS.delete(`reviews/${r.id}`);
-                          const newFoods = await AXIOS.get('foods');
-                          localStorage.setItem(
-                            'foods',
-                            JSON.stringify(newFoods),
-                          );
+                          getFood(foodId)
                         }
                       }}
                     >
@@ -241,7 +252,8 @@ export const DetailFood = () => {
         handleClose={handleClose}
         handleOpen={handleOpen}
         foodId={foodId}
-        isAdd
+        review={review}
+        setReview={setReview}
       />
     </Box>
   );

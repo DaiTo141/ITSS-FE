@@ -1,15 +1,16 @@
 import { DetailFood } from 'containers/DetailFood';
 import { DetailRestaurant } from 'containers/DetailRestaurant';
+import { DetailUser } from 'containers/DetailUser';
 import Home from 'containers/Home';
 import { Login } from 'containers/Login';
 import { Register } from 'containers/Register';
-import { Search } from 'containers/Search/Index';
+import { Search } from 'containers/Search';
 import { clientRoutesEnum } from 'enums/routes';
 import DashBoardLayout from 'layouts/DashBoardLayout';
-import LoginLayout from 'layouts/LoginLayout';
-import React from 'react';
+import AuthLayout from 'layouts/AuthLayout';
 import { Switch } from 'react-router-dom';
-
+import React from 'react';
+import { ForgotPassword } from 'containers/ForgotPassword';
 const AppRoutes = () => {
   return (
     <Switch>
@@ -33,8 +34,14 @@ const AppRoutes = () => {
         path={clientRoutesEnum.DETAIL_RESTAURANT}
         RenderComponent={DetailRestaurant}
       />
-      <LoginLayout exact path="/login" RenderComponent={Login} />
-      <LoginLayout exact path="/register" RenderComponent={Register} />
+      <DashBoardLayout
+        exact
+        path={clientRoutesEnum.DETAIL_USER}
+        RenderComponent={DetailUser}
+      />
+      <AuthLayout exact path="/login" RenderComponent={Login} />
+      <AuthLayout exact path="/register" RenderComponent={Register} />
+      <AuthLayout exact path="/forgot_password" RenderComponent={ForgotPassword} />
     </Switch>
   );
 };

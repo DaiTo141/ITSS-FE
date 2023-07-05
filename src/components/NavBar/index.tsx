@@ -5,24 +5,23 @@ import {
   Typography,
   makeStyles,
 } from '@material-ui/core';
+
 import React, { useEffect, useState } from 'react';
 import HomeIcon from '@mui/icons-material/Home';
 import SearchIcon from '@mui/icons-material/Search';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import PersonIcon from '@mui/icons-material/Person';
 import MenuIcon from '@mui/icons-material/Menu';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
-import AXIOS from 'services/axios';
+import { SecureStorageEnum } from 'enums/auth';
+
 export const NavBar = () => {
   const classes = useStyles();
   const [active, setActive] = useState('home');
   const me = localStorage.getItem('me');
   const history = useHistory();
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
-    null,
-  );
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -34,33 +33,12 @@ export const NavBar = () => {
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
 
-  const getFoods = async () => {
-    const data = await AXIOS.get('foods');
-    localStorage.setItem('foods', JSON.stringify(data));
-  };
-  const getUsers = async () => {
-    const data = (await AXIOS.get('users')) as any;
-    localStorage.setItem('users', JSON.stringify(data));
-  };
-  const getRestaurants = async () => {
-    const data = await AXIOS.get('restaurants');
-    localStorage.setItem('restaurants', JSON.stringify(data));
-  };
-  const getReviews = async () => {
-    const data = await AXIOS.get('reviews');
-    localStorage.setItem('reviews', JSON.stringify(data));
-  };
-  useEffect(() => {
-    getFoods();
-    getReviews();
-    getUsers();
-    getRestaurants();
-  }, []);
   useEffect(() => {
     if (history.location.pathname.split('/')[1]) {
       setActive(history.location.pathname.split('/')[1]);
     } else setActive('home');
   }, [history]);
+
   return (
     <Box className={classes.container}>
       <Box
@@ -113,14 +91,19 @@ export const NavBar = () => {
         >
           <SearchIcon fontSize="large" />
         </Box>
+        { localStorage.getItem('me') &&
         <Box
           className={clsx(classes.item, {
-            [classes.active]: active == 'noti',
+            [classes.active]: active == 'profile',
           })}
-          onClick={() => setActive('noti')}
+          onClick={() => {
+            setActive('profile')
+            history.push('/profile')
+          }}
         >
-          <NotificationsIcon fontSize="large" />
+          <PersonIcon fontSize="large" />
         </Box>
+        }
       </Box>
       <Box
         style={{
@@ -161,7 +144,12 @@ export const NavBar = () => {
               cursor: 'pointer',
             }}
             onClick={() => {
-              history.push('/login');
+              if (me) {
+                history.push('/profile')
+                setActive('profile')
+              } else {
+                history.push('/login');
+              }
             }}
           >
             <PersonIcon color="info" />
@@ -181,11 +169,12 @@ export const NavBar = () => {
               cursor: 'pointer',
             }}
             onClick={()=>{
-              if(!me) {
-                history.push('/register');
+              if (me) {
+                localStorage.removeItem('me')
+                localStorage.removeItem(SecureStorageEnum.ACCESS_TOKEN)
+                history.push('/')
               } else {
-                localStorage.removeItem('me');
-                history.push('/login');
+                history.push('/register')
               }
             }}
           >

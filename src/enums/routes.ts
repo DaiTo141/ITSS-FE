@@ -1,6 +1,6 @@
 export enum apiRoutesEnum {
-  AUTH_RENEW = '/auth/access-token',
-  LOGIN = 'auth/login',
+  AUTH_RENEW = '/auths/access-token',
+  LOGIN = 'auths/login',
 }
 
 export enum clientRoutesEnum {
@@ -8,4 +8,5 @@ export enum clientRoutesEnum {
   SEARCH = '/search',
   DETAIL_FOOD = '/detail-food/:foodId',
   DETAIL_RESTAURANT = '/detail-restaurant/:restaurantId',
+  DETAIL_USER = '/profile'
 }
