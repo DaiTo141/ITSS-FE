@@ -46,7 +46,7 @@ export default function RowReview({ item }) {
           className="mx-2 hover:text-blue-500 cursor-pointer"
         />
       </div>
-      {modalDelete && <ModalDelete closeModalDelete={closeModalDelete} />}
+      {modalDelete && <ModalDelete url={'/reviews/'+item.id} closeModalDelete={closeModalDelete} />}
     </div>
   );
 }

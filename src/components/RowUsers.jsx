@@ -92,7 +92,7 @@ export default function RowUsers({ item }) {
           className="mx-2 hover:text-blue-500 cursor-pointer"
         />
       </div>
-      {modalDelete && <ModalDelete closeModalDelete={closeModalDelete} />}
+      {modalDelete && <ModalDelete url={'/users/'+item.id} closeModalDelete={closeModalDelete} />}
       {modalCheck && <ModalCheck item={item} statuscloseModalCheck={closeModalCheck} />}
       {modalSettingUser && (
         <div className="text-base">
