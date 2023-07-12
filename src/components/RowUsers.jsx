@@ -47,11 +47,11 @@ export default function RowUsers({ item }) {
       <div className="flex justify-center items-center truncate">
         {
           item.status === 1 && 
-          <img width={40} height={36} src='https://img.uxwing.com/wp-content/themes/uxwing/download/checkmark-cross/blue-check-mark-icon.svg' />
+          <img width={40} height={36} src='https://img.uxwing.com/wp-content/themes/uxwing/download/signs-symbols/stop-blocked-icon.svg'/>
         }
         {
           item.status === 0 && 
-          <img width={40} height={36} src='https://img.uxwing.com/wp-content/themes/uxwing/download/signs-symbols/stop-blocked-icon.svg'/>
+          <img width={40} height={36} src='https://img.uxwing.com/wp-content/themes/uxwing/download/checkmark-cross/blue-check-mark-icon.svg' />
         }
       </div>
       <div className="flex justify-center items-center truncate">
