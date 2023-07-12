@@ -43,7 +43,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && echo '/* /index.html  200' | cat >build/_redirects",
+    "build": "react-scripts --openssl-legacy-provider build && echo '/* /index.html  200' | cat >build/_redirects",
     "tsc": "tsc --noEmit",
     "prettier": "prettier --write 'src/**/*.{ts,tsx}'",
     "eslint": "eslint 'src/**/*.{ts,tsx}'",
