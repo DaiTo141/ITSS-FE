@@ -30,19 +30,23 @@ export const Search = () => {
   const [prices, setPrices] = useState([0, 100]);
   const [percent, setPercent] = useState(50);
   const getFoods = async (params:any, type:any) => {
-    const data = await AXIOS.get('foods', {
-      params: params
-    })
-    setFoods(data)
-    if (type == '日本人好む料理'||type == '食べ物') setData(data)
+    setTimeout(async () => {
+      const data = await AXIOS.get('foods', {
+        params: params
+      })
+      setFoods(data)
+      if (type == '日本人好む料理'||type == '食べ物') setData(data)
+    }, 500)
   }
 
   const getRestaurants = async (params:any, type:any) => {
-    const data = await AXIOS.get('restaurants', {
-      params: params
-    })
-    setRestaurants(data)
-    if (type == 'レストラン') setData(data)
+    setTimeout(async () => {
+      const data = await AXIOS.get('restaurants', {
+        params: params
+      })
+      setRestaurants(data)
+      if (type == 'レストラン') setData(data)
+    }, 500)
   }
 
   useEffect(() => {

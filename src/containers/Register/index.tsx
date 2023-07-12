@@ -182,9 +182,10 @@ export const Register = () => {
                 password: password,
                 image:
                   'https://s3.ap-southeast-2.amazonaws.com/cdn.greekherald.com.au/wp-content/uploads/2020/07/05194617/default-avatar.png',
-                status: 0,
+                status: 1,
                 nation: nation
               });
+              console.log(data)
               AXIOS.post('auths/login', {
                 email:email,
                 password: password

@@ -81,10 +81,10 @@ import {
           <Box className={classes.item}>
             <Typography>状態: </Typography>
             <Typography>
-              {me.status == 1 &&
+              {me.status == 0 &&
                <div style={{color:'red'}}>ブロック</div>
               }
-              {me.status == 0 &&
+              {me.status == 1 &&
                <div style={{color:'green'}}>オンライン</div>
               }
             </Typography>
