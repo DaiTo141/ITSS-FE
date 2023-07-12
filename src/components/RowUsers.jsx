@@ -93,7 +93,7 @@ export default function RowUsers({ item }) {
         />
       </div>
       {modalDelete && <ModalDelete url={'/users/'+item.id} closeModalDelete={closeModalDelete} />}
-      {modalCheck && <ModalCheck item={item} statuscloseModalCheck={closeModalCheck} />}
+      {modalCheck && <ModalCheck item={item} closeModalCheck={closeModalCheck} />}
       {modalSettingUser && (
         <div className="text-base">
           <ModalSettingUser item={item} closeModalSettingUser={closeModalSettingUser} />
