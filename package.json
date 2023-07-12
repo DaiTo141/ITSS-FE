@@ -42,7 +42,7 @@
     "web3": "^1.7.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts --openssl-legacy-provider start",
     "build": "react-scripts --openssl-legacy-provider build && echo '/* /index.html  200' | cat >build/_redirects",
     "tsc": "tsc --noEmit",
     "prettier": "prettier --write 'src/**/*.{ts,tsx}'",

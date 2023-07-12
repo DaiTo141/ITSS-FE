@@ -8,7 +8,7 @@ import {
   } from '@material-ui/core';
   import { Pagination, Rating, Button } from '@mui/material';
   import React, { useEffect, useState } from 'react';
-  import { useHistory, useParams } from 'react-router-dom';
+  import { NavLink, useHistory, useParams } from 'react-router-dom';
   import AXIOS from 'services/axios';
   
   export const DetailUser = () => {
@@ -92,6 +92,7 @@ import {
         </Box>
         <Box mt={5} width={'100%'}>
           {getReviewPage().map((r: any, i: any) => {
+            console.log(r)
             return (
               <Box
                 display="flex"
@@ -105,6 +106,7 @@ import {
                   borderRadius: 50,
                   background: 'white',
                 }}
+                onClick={() => history.push(`/detail-food/${r.food_id}`)}
               >            
                 <Box
                   width="calc(100% - 140px)"
