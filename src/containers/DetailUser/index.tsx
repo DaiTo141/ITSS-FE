@@ -92,7 +92,6 @@ import {
         </Box>
         <Box mt={5} width={'100%'}>
           {getReviewPage().map((r: any, i: any) => {
-            console.log(r)
             return (
               <Box
                 display="flex"
